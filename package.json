@@ -1,0 +1,39 @@
+{
+  "name": "bazar",
+  "version": "1.0.0",
+  "description": "An applicaton that allows users to buy from, sell to and chat with others locally",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/utsabk/bazar.git"
+  },
+  "keywords": [
+    "Node.js",
+    "Express",
+    "Graphql",
+    "Mongoose",
+    "MariaDB",
+    "Bazar",
+    "Online",
+    "Shop"
+  ],
+  "author": "utsabk",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://gitlab.com/utsabk/bazar/issues"
+  },
+  "homepage": "https://gitlab.com/utsabk/bazar#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.3"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.9"
+  }
+}
