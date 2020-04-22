@@ -1,0 +1,73 @@
+body {
+    margin: 0;
+    font-family: sans-serif;
+  }
+
+  header {
+    background-color: #2F303F;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    line-height: 3rem;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Roboto Slab', serif;
+  }
+  .button {
+    background-color: #2490d8;
+    color: #fff;
+    text-decoration: none;
+    padding: 1rem;
+    line-height: 3rem;
+  }
+  
+  .icon {
+    font-size: 2em;
+    position: relative;
+    top: 0.27rem;
+    color: #007ea7;
+  }
+  .item {
+    margin: 1rem 0;
+  }
+  
+  .item input, .item textarea {
+    font-size: 1rem;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 1rem;
+  }
+  
+  .item select {
+    font-size: 1rem;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 1rem;
+  }
+  
+  .buttons {
+    display: flex;
+  }
+  .buttons .item {
+    width: 50%;
+  }
+  
+  .item button {
+    display: block;
+    width: 100%;
+    font-size: 1rem;
+  }
+
+  
+  #insert-section {
+    box-sizing: border-box;
+    overflow: scroll;
+    transition: height 1s;
+  }  
+  
+  form {
+    margin: 0 1rem;
+  }
