@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
+    "bcrypt": "^4.0.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
@@ -40,7 +41,11 @@
     "fs": "0.0.1-security",
     "graphql": "^15.0.0",
     "graphql-upload": "^10.0.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.9",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
     "sharp": "^0.25.2"
   }
 }

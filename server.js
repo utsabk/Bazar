@@ -21,12 +21,14 @@ app.use('/modules', express.static('node_modules'));
 app.use(
   '/graphql',
   graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
-  graphqlHTTP({
-    schema: graphqlSchema,
-    graphiql: true,
-  })
+  (req, res) => {
+    graphqlHTTP({
+      schema: graphqlSchema,
+      graphiql: true,
+      context: { req, res },
+    })(req, res);
+  }
 );
-
 db.on('connected', () => {
   app.listen(process.env.APP_PORT, () => {
     console.log(`app listening on port ${process.env.APP_PORT}`);

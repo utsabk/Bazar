@@ -1,142 +1,67 @@
 'use strict';
+
+const { GraphQLUpload } = require('graphql-upload');
+const { createWriteStream } = require('fs');
+const bcrypt = require('bcrypt');
+
 const {
   GraphQLObjectType,
-  GraphQLInputObjectType,
   GraphQLString,
   GraphQLFloat,
-  GraphQLBoolean,
-  GraphQLInt,
   GraphQLList,
   GraphQLID,
   GraphQLNonNull,
   GraphQLSchema,
 } = require('graphql');
-const { GraphQLUpload } = require('graphql-upload');
 
-const { createWriteStream } = require('fs');
+const {
+  geoJSONType,
+  categoryType,
+  productStatusType,
+  productType,
+  ownerType,
+  InputLocationType,
+} = require('./types');
 
+const saltRound = 12;
+
+const authController = require('../controllers/authController');
 const productSchema = require('../models/product');
 const categorySchema = require('../models/category');
 const statusSchema = require('../models/productStatus');
 const userSchema = require('../models/user');
 const resize = require('../utils/resize');
 
-const geoJSONType = new GraphQLObjectType({
-  name: 'geoJSON',
-  fields: () => ({
-    type: { type: GraphQLString },
-    coordinates: { type: new GraphQLList(GraphQLFloat) },
-  }),
-});
-
-const categoryType = new GraphQLObjectType({
-  name: 'category',
-  description: "product's category",
-  fields: () => ({
-    id: { type: GraphQLID },
-    Title: { type: GraphQLString },
-  }),
-});
-
-const productStatusType = new GraphQLObjectType({
-  name: 'productstatustype',
-  description: "product's availability",
-  fields: () => ({
-    id: { type: GraphQLID },
-    Title: { type: GraphQLString },
-  }),
-});
-
-const product = new GraphQLObjectType({
-  name: 'product',
-  description: 'product details',
-  fields: () => ({
-    id: { type: GraphQLID },
-    Name: { type: GraphQLString },
-    Description: { type: GraphQLString },
-    Price: { type: GraphQLFloat },
-    Status: {
-      type: productStatusType,
-      resolve: async (parent, args) => {
-        try {
-          console.log('product parent', parent);
-          return await statusSchema.findById(parent.Status);
-        } catch (e) {
-          return new Error(e.message);
-        }
-      },
-    },
-    Category: {
-      type: categoryType,
-      resolve: async (parent, args) => {
-        try {
-          console.log('category parent', parent);
-          return await categorySchema.findById(parent.Category);
-        } catch (e) {
-          return new Error(e.message);
-        }
-      },
-    },
-    Image: { type: GraphQLString },
-    Owner: {
-      type: new GraphQLNonNull(ownerType),
-      resolve: async (parent, args) => {
-        try {
-          console.log('owner parent', parent);
-          return await userSchema.findById(parent.Owner);
-        } catch (e) {
-          return new Error(e.message);
-        }
-      },
-    },
-    Location: { type: geoJSONType },
-  }),
-});
-
-const ownerType = new GraphQLObjectType({
-  name: 'ownerType',
-  description: 'Owner of the product',
-  fields: () => ({
-    id: { type: GraphQLID },
-    Name: { type: GraphQLString },
-    Email: { type: GraphQLString },
-    Password: { type: GraphQLString },
-    Phone: { type: GraphQLString },
-    DP: { type: GraphQLString },
-    Products: {
-      type: new GraphQLList(product),
-      require: async (parent, args) => {
-        try {
-        } catch (e) {
-          return new Error(e.message);
-        }
-      },
-    },
-  }),
-});
-
-const InputLocationType = new GraphQLInputObjectType({
-  name: 'inputlocationtpye',
-  fields: () => ({
-    type: { type: GraphQLString, defaultValue: 'Point' },
-    coordinates: { type: new GraphQLNonNull(new GraphQLList(GraphQLFloat)) },
-  }),
-});
-
-const InputWithTitle = new GraphQLInputObjectType({
-  name: 'inputwithtitle',
-  fields: () => ({
-    _id: { type: GraphQLID },
-    Title: { type: GraphQLString },
-  }),
-});
-
 const RootQuery = new GraphQLObjectType({
   name: 'RootQuery',
   description: 'Main Query',
   fields: {
+    login: {
+      type: ownerType,
+      description: 'Authentication with username & password',
+      args: {
+        username: { type: new GraphQLNonNull(GraphQLString) },
+        password: { type: new GraphQLNonNull(GraphQLString) },
+      },
+      resolve: async (parent, args, { req, res }) => {
+        req.body = args;
+        req.body.username = args.username;
+        try {
+          const response = await authController.auth(req, res);
+          console.log('ar', response);
+          return {
+            id: response.user._id,
+            ...response.user,
+            token: response.token,
+          };
+        } catch (err) {
+          throw new Error(err);
+        }
+      },
+    },
+
     products: {
-      type: new GraphQLNonNull(new GraphQLList(product)),
+      type: new GraphQLNonNull(new GraphQLList(productType)),
       descriptions: 'Get all the products',
       resolve: async (parent, args) => {
         try {
@@ -175,7 +100,7 @@ const Mutation = new GraphQLObjectType({
   description: 'Mutation query',
   fields: {
     addProduct: {
-      type: product,
+      type: productType,
       description: 'Add product',
       args: {
         Name: { type: GraphQLString },
@@ -193,7 +118,6 @@ const Mutation = new GraphQLObjectType({
       resolve: async (parent, args) => {
         console.log('addProduct args:--', args);
         try {
-
           const { filename, mimetype, createReadStream } = await args.Image;
           const file = await new Promise(async (resolve, reject) => {
             const createdFile = await createReadStream()
@@ -203,11 +127,12 @@ const Mutation = new GraphQLObjectType({
               .on('error', () => reject(false));
           });
 
-           const newProduct = new productSchema({ ...args,Image:'uploads/' +filename, });
-           console.log('newProduct',newProduct)
-           return await newProduct.save();
-
-
+          const newProduct = new productSchema({
+            ...args,
+            Image: 'uploads/' + filename,
+          });
+          console.log('newProduct', newProduct);
+          return await newProduct.save();
         } catch (err) {
           console.log("I'm inside error");
           throw new Error(err);
@@ -225,7 +150,7 @@ const Mutation = new GraphQLObjectType({
         },
       },
       async resolve(parent, args) {
-        console.log('uploadImage args',args)
+        console.log('uploadImage args', args);
         try {
           const { filename, mimetype, createReadStream } = await args.image;
           const file = await new Promise(async (resolve, reject) => {
@@ -291,6 +216,45 @@ const Mutation = new GraphQLObjectType({
           return await newStatus.save();
         } catch (err) {
           throw new Error(err);
+        }
+      },
+    },
+    registerUser: {
+      type: ownerType,
+      description: 'Register a user',
+      args: {
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        email: { type: new GraphQLNonNull(GraphQLString) },
+        password: { type: new GraphQLNonNull(GraphQLString) },
+        phone: { type: new GraphQLNonNull(GraphQLString) },
+      },
+      resolve: async (parent, args, { req, res }) => {
+        console.log('Register args:', args);
+        try {
+          const hash = await bcrypt.hash(args.password, saltRound);
+          const newArgs = { ...args, password: hash };
+          console.log('New args:', newArgs);
+
+          const newUser = new userSchema(newArgs);
+          const result = await newUser.save();
+
+          if (result !== null) {
+            console.log('Im inside if clause');
+            req.body = args;
+            req.body.username = args.email;
+            console.log('req.body', req.body);
+            const response = await authController.auth(req, res);
+            console.log('ar', response);
+            return {
+              id: response.user._id,
+              ...response.user,
+              token: response.token,
+            };
+          } else {
+            throw new Error('insert fail');
+          }
+        } catch (err) {
+          new Error(err.message);
         }
       },
     },
