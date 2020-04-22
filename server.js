@@ -3,6 +3,7 @@
 require('dotenv').config();
 const express = require('express');
 const graphqlHTTP = require('express-graphql');
+const { graphqlUploadExpress } = require('graphql-upload');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
@@ -14,8 +15,12 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(express.static('public'));
+app.use('/modules', express.static('node_modules'));
+
 app.use(
   '/graphql',
+  graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
   graphqlHTTP({
     schema: graphqlSchema,
     graphiql: true,

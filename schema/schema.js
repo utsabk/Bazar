@@ -11,11 +11,15 @@ const {
   GraphQLNonNull,
   GraphQLSchema,
 } = require('graphql');
+const { GraphQLUpload } = require('graphql-upload');
+
+const { createWriteStream } = require('fs');
 
 const productSchema = require('../models/product');
 const categorySchema = require('../models/category');
 const statusSchema = require('../models/productStatus');
 const userSchema = require('../models/user');
+const resize = require('../utils/resize');
 
 const geoJSONType = new GraphQLObjectType({
   name: 'geoJSON',
@@ -41,7 +45,7 @@ const productStatusType = new GraphQLObjectType({
     id: { type: GraphQLID },
     Title: { type: GraphQLString },
   }),
-}); 
+});
 
 const product = new GraphQLObjectType({
   name: 'product',
@@ -142,6 +146,28 @@ const RootQuery = new GraphQLObjectType({
         }
       },
     },
+    categories: {
+      type: new GraphQLList(categoryType),
+      description: 'Get all the category',
+      resolve: async (parent, args) => {
+        try {
+          return await categorySchema.find();
+        } catch (err) {
+          return new Error(err.message);
+        }
+      },
+    },
+    productStatus: {
+      type: new GraphQLList(productStatusType),
+      description: 'Get all the product status',
+      resolve: async (parent, args) => {
+        try {
+          return await statusSchema.find();
+        } catch (err) {
+          return new Error(err.message);
+        }
+      },
+    },
   },
 });
 const Mutation = new GraphQLObjectType({
@@ -157,17 +183,59 @@ const Mutation = new GraphQLObjectType({
         Price: { type: GraphQLFloat },
         Status: { type: new GraphQLNonNull(GraphQLID) },
         Category: { type: new GraphQLNonNull(GraphQLID) },
-        Image: { type: GraphQLString },
-        Owner: { type: new GraphQLNonNull(GraphQLID), },
+        Image: {
+          description: 'Image file',
+          type: GraphQLUpload,
+        },
+        Owner: { type: GraphQLID },
         Location: { type: InputLocationType },
       },
       resolve: async (parent, args) => {
         console.log('addProduct args:--', args);
         try {
-          const newProduct = new productSchema({ ...args });
-          return await newProduct.save();
+
+          const { filename, mimetype, createReadStream } = await args.Image;
+          const file = await new Promise(async (resolve, reject) => {
+            const createdFile = await createReadStream()
+              .pipe(resize(300))
+              .pipe(createWriteStream(__dirname + `/../uploads/${filename}`))
+              .on('finish', () => resolve(createdFile))
+              .on('error', () => reject(false));
+          });
+
+           const newProduct = new productSchema({ ...args,Image:'uploads/' +filename, });
+           console.log('newProduct',newProduct)
+           return await newProduct.save();
+
+
         } catch (err) {
-          console.log('I\'m inside error')
+          console.log("I'm inside error");
+          throw new Error(err);
+        }
+      },
+    },
+
+    uploadImage: {
+      description: 'Uploads an image.',
+      type: GraphQLUpload,
+      args: {
+        image: {
+          description: 'Image file.',
+          type: GraphQLUpload,
+        },
+      },
+      async resolve(parent, args) {
+        console.log('uploadImage args',args)
+        try {
+          const { filename, mimetype, createReadStream } = await args.image;
+          const file = await new Promise(async (resolve, reject) => {
+            const createdFile = await createReadStream()
+              .pipe(resize(300))
+              .pipe(createWriteStream(__dirname + `/../uploads/${filename}`))
+              .on('finish', () => resolve(createdFile))
+              .on('error', () => reject(false));
+          });
+        } catch (err) {
           throw new Error(err);
         }
       },
