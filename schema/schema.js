@@ -226,7 +226,7 @@ const Mutation = new GraphQLObjectType({
         name: { type: new GraphQLNonNull(GraphQLString) },
         email: { type: new GraphQLNonNull(GraphQLString) },
         password: { type: new GraphQLNonNull(GraphQLString) },
-        phone: { type: new GraphQLNonNull(GraphQLString) },
+        phone: { type:  GraphQLString },
       },
       resolve: async (parent, args, { req, res }) => {
         console.log('Register args:', args);
