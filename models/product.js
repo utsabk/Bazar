@@ -6,10 +6,10 @@ const productSchema = new Schema({
   Name: String,
   Description: String,
   Price: Number,
-  Status: { type: Schema.Types.ObjectId, ref: 'ProductStatus' },
-  Category: { type: Schema.Types.ObjectId, ref: 'Category' },
+  Status:  {type: mongoose.Types.ObjectId, ref:  'ProductStatus' },
+  Category:  {type: mongoose.Types.ObjectId, ref:  'Category' },
   Image: String,
-  Owner: { type: Schema.Types.ObjectId, ref: 'User' },
+  Owner:  {type: mongoose.Types.ObjectId, ref:  'User' },
   Location: {
     type: {
       type: String,

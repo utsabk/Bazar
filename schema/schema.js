@@ -62,10 +62,22 @@ const RootQuery = new GraphQLObjectType({
 
     products: {
       type: new GraphQLNonNull(new GraphQLList(productType)),
-      descriptions: 'Get all the products',
+      description: 'Get all the products',
       resolve: async (parent, args) => {
         try {
           return await productSchema.find();
+        } catch (err) {
+          return new Error(err.message);
+        }
+      },
+    },
+
+    owners: {
+      type:  new GraphQLNonNull(new GraphQLList(ownerType)),
+      description: 'Get all the owners/user',
+      resolve: async (parent, args) => {
+        try {
+          return await userSchema.find()
         } catch (err) {
           return new Error(err.message);
         }
@@ -226,7 +238,7 @@ const Mutation = new GraphQLObjectType({
         name: { type: new GraphQLNonNull(GraphQLString) },
         email: { type: new GraphQLNonNull(GraphQLString) },
         password: { type: new GraphQLNonNull(GraphQLString) },
-        phone: { type:  GraphQLString },
+        phone: { type: GraphQLString },
       },
       resolve: async (parent, args, { req, res }) => {
         console.log('Register args:', args);

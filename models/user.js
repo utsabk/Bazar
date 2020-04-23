@@ -8,7 +8,7 @@ const userSchema = new Schema({
   password: String,
   phone: String,
   dp: String,
-  products: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
+  products: [ {type: mongoose.Types.ObjectId, ref:'Product' }],
   
 });
 

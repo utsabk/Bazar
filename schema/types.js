@@ -6,12 +6,13 @@ const {
   GraphQLFloat,
   GraphQLID,
   GraphQLNonNull,
-  GraphQLList
+  GraphQLList,
 } = require('graphql');
 
 const userSchema = require('../models/user');
 const statusSchema = require('../models/productStatus');
 const categorySchema = require('../models/category');
+const productSchema = require('../models/product');
 
 const geoJSONType = new GraphQLObjectType({
   name: 'geoJSON',
@@ -51,7 +52,6 @@ const productType = new GraphQLObjectType({
       type: productStatusType,
       resolve: async (parent, args) => {
         try {
-          console.log('product parent', parent);
           return await statusSchema.findById(parent.Status);
         } catch (e) {
           return new Error(e.message);
@@ -62,7 +62,6 @@ const productType = new GraphQLObjectType({
       type: categoryType,
       resolve: async (parent, args) => {
         try {
-          console.log('category parent', parent);
           return await categorySchema.findById(parent.Category);
         } catch (e) {
           return new Error(e.message);
@@ -74,7 +73,6 @@ const productType = new GraphQLObjectType({
       type: new GraphQLNonNull(ownerType),
       resolve: async (parent, args) => {
         try {
-          console.log('owner parent', parent);
           return await userSchema.findById(parent.Owner);
         } catch (e) {
           return new Error(e.message);
@@ -97,14 +95,17 @@ const ownerType = new GraphQLObjectType({
     dp: { type: GraphQLString },
     products: {
       type: new GraphQLList(productType),
-      require: async (parent, args) => {
+      resolve: async (parent, args) => {
         try {
+          return await productSchema.find({ 
+            Owner: parent.id
+           });
         } catch (e) {
           return new Error(e.message);
         }
       },
     },
-    token: {type: GraphQLString},
+    token: { type: GraphQLString },
   }),
 });
 

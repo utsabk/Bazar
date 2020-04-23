@@ -32,6 +32,7 @@ productForm.addEventListener('submit', async (event) => {
             Category:"${categoryOption.value}",
             Status:"${statusOption.value}",
             Image:$file,
+            Owner:"${sessionStorage.getItem('userId')}",
             Location:{
                 coordinates:[${location.value}]
             }

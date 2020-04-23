@@ -16,6 +16,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static('public'));
+
+
 app.use('/modules', express.static('node_modules'));
 
 app.use(
@@ -34,3 +36,5 @@ db.on('connected', () => {
     console.log(`app listening on port ${process.env.APP_PORT}`);
   });
 });
+
+
