@@ -7,8 +7,8 @@
   const signInPassword = document.getElementById('signInPassword');
 
   signInForm.addEventListener('submit', async (event) => {
+    sessionStorage.clear();
     event.preventDefault();
-
     const query = {
       query: `
         {

@@ -1,0 +1,205 @@
+
+/*----------------------------*\
+	Typography
+\*----------------------------*/
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  color: #333;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #2B2D42;
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+a {
+  color: #2B2D42;
+  font-weight: 500;
+  -webkit-transition: 0.2s color;
+  transition: 0.2s color;
+}
+
+a:hover, a:focus {
+  color: #D10024;
+  text-decoration: none;
+  outline: none;
+}
+
+ul, ol {
+  margin: 0;
+  padding: 0;
+  list-style: none
+  
+}
+
+  /*=========================================================
+	03 -> Navigation
+===========================================================*/
+
+#navigation {
+  background: #FFF;
+  border-bottom: 2px solid #E4E7ED;
+  border-top: 3px solid #D10024;
+}
+
+/*----------------------------*\
+	Main nav
+\*----------------------------*/
+
+.main-nav {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 25px;
+}
+
+.main-nav>li+li {
+  margin-left: 30px
+}
+
+.main-nav>li>a {
+ padding: 20px 0px;
+}
+
+.main-nav>li>a:hover, .main-nav>li>a:focus, .main-nav>li.active>a {
+  color: #D10024;
+  background-color: transparent;
+}
+
+.main-nav>li>a:after {
+  content: "";
+  display: block;
+  width: 0%;
+  height: 2px;
+  background-color: #D10024;
+  -webkit-transition: 0.2s all;
+  transition: 0.2s all;
+}
+
+.main-nav>li>a:hover:after, .main-nav>li>a:focus:after, .main-nav>li.active>a:after {
+  width: 100%;
+}
+
+.header-ctn li.nav-toggle {
+  display: none;
+}
+
+  /*----------------------------*\
+	Section
+\*----------------------------*/
+  .section-title .title {
+    display: inline-block;
+    text-transform: uppercase;
+    margin: 20px;
+  }
+  
+
+/*=========================================================
+	06 -> PRODUCT
+===========================================================*/
+
+.product {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex: 0 45%;
+
+  margin: 25px 25px;
+  -webkit-box-shadow: 0px 0px 0px 0px #E4E7ED, 0px 0px 0px 1px #E4E7ED;
+  box-shadow: 0px 0px 0px 0px #E4E7ED, 0px 0px 0px 1px #E4E7ED;
+  -webkit-transition: 0.2s all;
+  transition: 0.2s all;
+}
+
+.product:hover {
+  -webkit-box-shadow: 0px 0px 6px 0px #E4E7ED, 0px 0px 0px 2px #D10024;
+  box-shadow: 0px 0px 6px 0px #E4E7ED, 0px 0px 0px 2px #D10024;
+}
+
+.product .product-img {
+  position: relative;
+}
+
+.product .product-img>img {
+  width: 80%;
+}
+
+.product .product-body {
+  width: 100%;
+  position: relative;
+  padding: 40px;
+  background-color: #FFF;
+  text-align: center;
+  z-index: 20;
+}
+
+.product .product-body .product-status {
+  text-transform: uppercase;
+  font-size: 12px;
+  color: #8D99AE;
+}
+
+.product .product-body .product-name {
+  text-transform: uppercase;
+  font-size: 16px;
+}
+
+.product .product-body .product-name>a {
+  font-weight: 700;
+}
+
+.product .product-body .product-name>a:hover, .product .product-body .product-name>a:focus {
+  color: #D10024;
+}
+
+.product .product-body .product-price {
+  color: #D10024;
+  font-size: 18px;
+}
+
+.product .product-body .quick-view{
+  padding: 12px 0px;
+  background-color: rgba(189, 33, 46, 0.883);
+  border: none;
+  border-radius: 15px;
+  color: #FFF;
+  -webkit-transition: 0.2s all;
+  transition: 0.2s all;
+
+}
+
+.product .product-body .quick-view span{
+  text-transform: uppercase;
+  font-weight: 700;
+  text-align: center;
+  margin: 20px;
+
+}
+
+.quick-view:hover, .quick-view:focus {
+  opacity: 0.6;
+  color: #FFF;
+}
+
+/*----------------------------*\
+	Products tabs
+\*----------------------------*/
+.products-cotainer>.tab-pane {
+  display: flex;
+  flex-wrap: wrap;
+  height: 0;
+  opacity: 0;
+  visibility: hidden;
+  overflow-y: hidden;
+  padding-bottom: 60px;
+  margin-bottom: -60px;
+}
+
+.products-cotainer>.tab-pane.active {
+  opacity: 1;
+  visibility: visible;
+  height: auto;
+}

@@ -41,7 +41,7 @@
     }
   };
 
-  const fetchCategories = async (element) => {
+  const fetchCategories = async () => {
     const query = {
       query: `{
         categories {
@@ -52,13 +52,12 @@
     };
 
     const data = await fetchGraphql(query);
-    data.categories.forEach((category) => {
-      element.innerHTML += `<option value="${category.id}">${category.Title}</option>`;
-    });
+
+    return data;
   };
 
 
-  const fetchProductStatus = async (element) => {
+  const fetchProductStatus = async () => {
     const query = {
       query: `{
         productStatus{
@@ -69,7 +68,23 @@
     };
 
     const data = await fetchGraphql(query);
-    data.productStatus.forEach((status) => {
-      element.innerHTML += `<option value="${status.id}">${status.Title}</option>`;
-    });
+    return data;
+    
   };
+
+
+  const fetchUser = async(userId)=>{
+    const query = {
+      query: `
+         {
+           owner(id:"${userId}")
+           {
+           id
+           name
+           }
+         }
+      `,
+    };
+    const response = await fetchGraphql(query);
+    return response
+  }

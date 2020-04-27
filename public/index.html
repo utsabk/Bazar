@@ -1,76 +1,77 @@
 <!DOCTYPE html>
-<html class="no-js" lang="">
+<html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <link href="./modules/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">    
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta charset="utf-8" />
+    <!--===============================================================================================-->
+    <title>Sell Item</title>
+    <!--===============================================================================================-->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="css/style.css" />
+    <!--===============================================================================================-->
+    <link href="./modules/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet"/>
+    <!--===============================================================================================-->
+    <link type="text/css" rel="stylesheet" href="./css/shop.css" />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="./css/header.css" />
+    <!--===============================================================================================-->
   </head>
-  <body>
-    <section id="insert-section">
-        <header>
-            <h2>Add a Product</h2>
-        </header>
-        <form id="product-form">
-            <div class="item">
-                <input type="text" name="name" placeholder="Name" />
-            </div>
-            <div class="item">
-                <textarea name="description" placeholder="Description"></textarea>
-            </div>
-            <div class="item">
-                <input type="number" name="price" placeholder="Price" />
-            </div>
-            
-            <div class="item">
-                 <label>Category
-                    <select id="category">
-                         <option> -</option>
-                    </select>
-                </label>
-            </div>
 
-            <div class="item">
-                <label>Status
-                    <select id="status">
-                         <option> -</option>
-                    </select>
-                </label>
-           </div>
+  <header>
+    <div class="header">
+      <div class="header-right">
+        <img src="./images/logo.png" alt="IMG" />
+      </div>
 
-            <div class="item">
-                Select image
-                <input type="file" name="productImage" placeholder="" accept="image/*" />
-            </div>
-            
-            <div class="item">
-                <input type="text" name="location" placeholder="Location" />
-            </div>
-    
-            
-
-            <div class="buttons">
-
-                    <div class="item">
-                        <button class="button" type="submit">
-                            <!-- <i class="fas fa-save fa-2x">Save</i> -->
-                            <i style="font-size:30px;">Save</i>
-
-                        </button>
-                    </div>
-
-                    <div class="item">
-                         <button class="button" id="reset-button" type="reset">
-                            <!-- <i class="fas fa-window-close fa-2x">Reset</i> -->
-                            <i style="font-size:30px;">Reset</i>
-
-                        </button>
-                    </div>
-            </div>
+      <div class="search-container">
+        <form action="/action_page.php">
+          <input type="text" placeholder="Search.." name="search" />
+          <button type="submit" class="search-btn">Search</button>
         </form>
-    </section>
-    <script type="text/javascript" src="./js/main.js"></script>
-    <script type="text/javascript" src="./js/productUpload.js"></script>
+      </div>
+
+      <div class="signin">
+        <i class="fas fa-user fa-2x" aria-hidden="true"></i>
+        <a id="SignInBtn" href="signin.html">SignIn</a>
+      </div>
+    </div>
+  </header>
+
+  <body>
+    <!-- NAVIGATION -->
+    <nav id="navigation">
+      <!-- responsive-nav -->
+      <div id="responsive-nav">
+        <!-- NAV -->
+        <ul id= "navBar" class="main-nav nav navbar-nav">
+          <li><a id="home" href="#">Home</a></li>
+          <li><a id="electronics" href="#">Electronics</a></li>
+          <li><a id="stationary" href="#">Stationary</a></li>
+          <li><a id="sports" href="#">Sports</a></li>
+          <li><a id="fashion" href="#">Fashion</a></li>
+          <li><a id="others" href="#">Others</a></li>
+        
+        </ul>
+        <!-- /NAV -->
+      </div>
+      <!-- /responsive-nav -->
+    </nav>
+    <!-- /NAVIGATION -->
+
+    <!-- SECTION -->
+    <div class="section">
+      <div class="section-title">
+        <h3 class="title">All Products</h3>
+      </div>
+
+      <!-- Products -->
+        <div class="products-cotainer">
+          <!-- tab -->
+          <div id="listOfProducts" class="tab-pane active">
+          </div>
+          <!-- /tab -->
+        </div>
+    </div>
+	<!-- /SECTION -->
+	<script type="text/javascript" src="./js/main.js"></script>
+    <script type="text/javascript" src="./js/index.js"></script>
   </body>
 </html>

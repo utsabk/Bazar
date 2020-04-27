@@ -71,18 +71,48 @@ const RootQuery = new GraphQLObjectType({
         }
       },
     },
-
-    owners: {
-      type:  new GraphQLNonNull(new GraphQLList(ownerType)),
-      description: 'Get all the owners/user',
+    productsByCategory:{
+      type: new GraphQLNonNull(new GraphQLList(productType)),
+      description: 'Get all the products by category',
+      args:{
+        id:{type: GraphQLID}
+      },
       resolve: async (parent, args) => {
         try {
-          return await userSchema.find()
+          return await productSchema.find({Category:{
+            _id:  args.id }});
         } catch (err) {
           return new Error(err.message);
         }
       },
     },
+    owner: {
+      type: ownerType,
+      description: 'Get the user with token',
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLString) },
+      },
+      resolve: async (parent, args) => {
+        try {
+          console.log('ownerById args ', args);
+          return await userSchema.findById(args.id);
+        } catch (err) {
+          return new Error(err.message);
+        }
+      },
+    },
+    owners: {
+      type: new GraphQLNonNull(new GraphQLList(ownerType)),
+      description: 'Get all the owners/user',
+      resolve: async (parent, args) => {
+        try {
+          return await userSchema.find();
+        } catch (err) {
+          return new Error(err.message);
+        }
+      },
+    },
+    
     categories: {
       type: new GraphQLList(categoryType),
       description: 'Get all the category',
@@ -134,7 +164,7 @@ const Mutation = new GraphQLObjectType({
           const file = await new Promise(async (resolve, reject) => {
             const createdFile = await createReadStream()
               .pipe(resize(300))
-              .pipe(createWriteStream(__dirname + `/../uploads/${filename}`))
+              .pipe(createWriteStream(__dirname + `/../public/uploads/${filename}`))
               .on('finish', () => resolve(createdFile))
               .on('error', () => reject(false));
           });

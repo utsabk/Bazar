@@ -27,9 +27,15 @@
     }
   };
 
+
+  // Event Listeners
+  signUpEmail.addEventListener('change',validateEmail)
+  signUpPassword.addEventListener('change',validatePassword)
+  confirmPassword.addEventListener('input',validatePassword)
+
   signUpForm.addEventListener('submit', async (event) => {
     event.preventDefault();
-
+    sessionStorage.clear();
     const query = {
       query: `
                 mutation{
@@ -50,8 +56,8 @@
     const result = await fetchGraphql(query);
     console.log('result after signup', result);
 
-    sessionStorage.setItem('userId', result.login.id);
-    sessionStorage.setItem('token', result.login.token);
+    sessionStorage.setItem('userId', result.registerUser.id);
+    sessionStorage.setItem('token', result.registerUser.token);
 
     location.replace('../index.html');
   });

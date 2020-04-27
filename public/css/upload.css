@@ -1,0 +1,110 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Roboto Slab', serif;
+}
+.button {
+  background-color: #2490d8;
+  color: #fff;
+  text-decoration: none;
+  padding: 1rem;
+}
+.item {
+  margin: 1rem 0;
+}
+
+.item input,
+.item textarea {
+  font-size: 1rem;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.options{
+  position: relative;
+  overflow: hidden;
+  font-size: 1rem;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.options select {
+  font-size: 1.5rem;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+
+.upload-btn-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn {
+  text-align: left;
+  font-size: 1.5rem;
+  width: 100%;
+  border: 1px solid gray;
+  color: gray;
+  background-color: white;
+  padding: 8px 20px;
+  border-radius: 8px;
+  opacity: 1;
+
+}
+
+.upload-btn-wrapper input[type=file] {
+  font-size: 40px;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.buttons .item {
+  width: 50%;
+}
+
+.item button {
+  display: block;
+  width: 99%;
+  border: 1px solid gray;
+  border-radius: 8px;
+  background: #2c064ea9;
+  background: -webkit-linear-gradient(-135deg, #0b72b6, #411c95de);
+  background: -o-linear-gradient(-135deg,#0b72b6, #411c95de);
+  background: -moz-linear-gradient(-135deg,#0b72b6, #411c95de);
+  background: linear-gradient(-135deg, #0b72b6, #411c95de);
+
+
+}
+
+#insert-section {
+  box-sizing: border-box;
+  overflow: scroll;
+  transition: height 1s;
+}
+
+form {
+  margin: 0 1rem;
+}
+
+
+
