@@ -43,12 +43,7 @@
 
   const fetchCategories = async () => {
     const query = {
-      query: `{
-        categories {
-        id
-        Title
-      }
-    }`,
+      query: `{\n categories {\n id\n Title\n }\n }`,
     };
 
     const data = await fetchGraphql(query);
@@ -59,12 +54,7 @@
 
   const fetchProductStatus = async () => {
     const query = {
-      query: `{
-        productStatus{
-          id
-          Title
-        }
-      }`,
+      query: `{\n productStatus{\n id\n Title\n }\n }`,
     };
 
     const data = await fetchGraphql(query);
@@ -75,15 +65,7 @@
 
   const fetchUser = async(userId)=>{
     const query = {
-      query: `
-         {
-           owner(id:"${userId}")
-           {
-           id
-           name
-           }
-         }
-      `,
+      query: `{\n owner(id:"${userId}")\n {\n id\n name\n }\n }\n `,
     };
     const response = await fetchGraphql(query);
     return response

@@ -185,21 +185,93 @@ ul, ol {
 }
 
 /*----------------------------*\
-	Products tabs
+	Products Container
 \*----------------------------*/
-.products-cotainer>.tab-pane {
+.products-cotainer {
   display: flex;
   flex-wrap: wrap;
-  height: 0;
-  opacity: 0;
-  visibility: hidden;
   overflow-y: hidden;
   padding-bottom: 60px;
   margin-bottom: -60px;
 }
+/*----------------------------*\
+	Product details
+\*----------------------------*/
 
-.products-cotainer>.tab-pane.active {
-  opacity: 1;
-  visibility: visible;
-  height: auto;
+.productItself {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 25px 25px;
+  -webkit-box-shadow: 0px 0px 0px 0px #E4E7ED, 0px 0px 0px 1px #E4E7ED;
+  box-shadow: 0px 0px 0px 0px #E4E7ED, 0px 0px 0px 1px #E4E7ED;
+  -webkit-transition: 0.2s all;
+  transition: 0.2s all;
 }
+
+.productItself:hover {
+  -webkit-box-shadow: 0px 0px 6px 0px #E4E7ED, 0px 0px 0px 2px #D10024;
+  box-shadow: 0px 0px 6px 0px #E4E7ED, 0px 0px 0px 2px #D10024;
+}
+
+.product-details {
+  width: 50%;
+  padding: 100px;
+}
+
+.product-details .product-name {
+  text-transform: uppercase;
+  font-size: 18px;
+}
+
+.product-details .product-price {
+  display: inline-block;
+  font-size: 24px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  color: #D10024;
+}
+.product-details .product-available {
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-left: 30px;
+  color: #D10024;
+}
+
+.product-details .product-btns li {
+  display: inline-block;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.product-details .product-btns li+li {
+  margin-left: 15px;
+}
+
+.product-details .product-links {
+  margin-top: 15px;
+}
+
+.product-details .product-links li {
+  display: inline-block;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.product-details .product-links li+li {
+  margin-left: 10px;
+}
+
+
+
+/*----------------------------*\
+	Product Details view
+\*----------------------------*/
+.product-main-img {
+  margin: 0px 5px;
+}
+.product-main-img .product-preview img {
+  width: 50%;
+}
+

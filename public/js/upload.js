@@ -41,8 +41,7 @@
     const formData = new FormData();
     const query = {
       query: `
-      mutation($file: Upload!){
-        addProduct (
+      mutation($file: Upload!){\n addProduct (
             Name:"${name.value}", 
             Description:"${description.value}",
             Price:${price.value},
@@ -50,16 +49,10 @@
             Status:"${statusOption.value}",
             Image:$file,
             Owner:"${sessionStorage.getItem('userId')}",
-            Location:{
-                coordinates:[${location.value}]
-            }
+            Location:{\n coordinates:[${location.value}]\n }
         )
-        {
-            id
-            Name
-        }
-     }
-        `,
+        {\n id\n Name\n } 
+     }`,
     };
     formData.append('operations', JSON.stringify(query));
     formData.append('map', '{"0":["variables.file"]}');

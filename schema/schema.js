@@ -60,27 +60,34 @@ const RootQuery = new GraphQLObjectType({
       },
     },
 
-    products: {
-      type: new GraphQLNonNull(new GraphQLList(productType)),
-      description: 'Get all the products',
+    product: {
+      type: productType,
+      description: 'Get a product by ID',
+      args:{
+      id:{type:GraphQLID}
+      },
       resolve: async (parent, args) => {
         try {
-          return await productSchema.find();
+          return await productSchema.findById(args.id);
         } catch (err) {
           return new Error(err.message);
         }
       },
     },
-    productsByCategory:{
+    products: {
       type: new GraphQLNonNull(new GraphQLList(productType)),
-      description: 'Get all the products by category',
+      description: 'Get all the products',
       args:{
-        id:{type: GraphQLID}
+      categoryId:{type: GraphQLID}
       },
       resolve: async (parent, args) => {
         try {
-          return await productSchema.find({Category:{
-            _id:  args.id }});
+          if(args.categoryId){
+            return await productSchema.find({Category:{
+              _id:  args.categoryId }});
+          }else{
+            return await productSchema.find();
+          }
         } catch (err) {
           return new Error(err.message);
         }

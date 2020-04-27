@@ -1,48 +1,43 @@
 'use strict';
 
-const productDiv = document.getElementById('listOfProducts');
+const sectionTitle = document.querySelector('.section-title h3');
+const productContainer = document.querySelector('.products-cotainer');
 const home = document.getElementById('home');
-const electronics = document.getElementById('electronics');
-const stationary = document.getElementById('stationary');
-const sports = document.getElementById('sports');
-const fashion = document.getElementById('fashion');
-const others = document.getElementById('others');
-
 
 const signInBtn = document.getElementById('SignInBtn');
 
+// Populate navigation bar fetching data from graphql
+const navBar = document.getElementById('navBar');
+(async () => {
+  const categories = await fetchCategories();
+  console.log('Inside asyncs', categories);
+  categories.categories.forEach((category) => {
+    const list = document.createElement('li');
+    list.innerHTML += `<ahref="#">${category.Title}</a>`;
 
-// Populate navigation bar fetching data from BACKEND
-// const navBar = document.getElementById('navBar');
-// (async () => {
-//   const categories = await fetchCategories();
-//   categories.categories.forEach((category) => {
-//     navBar.innerHTML += `
-//                     <li>
-//                         <a id="${category.id}" href="shop.html">
-//                             ${category.Title}
-//                         </a>
-//                     </li>
-//                 `;
-//   });
-// })();
+    navBar.appendChild(list);
 
+    list.addEventListener('click', () => {
+      getProducts(category.id);
+    });
+  });
+})();
 
 // Fetch username if user is signed in
-(async()=>{
-    const userId = sessionStorage.getItem('userId');
-    if (userId) {
-      const users = await fetchUser(userId)
-      signInBtn.innerHTML = users.owner.name;
-      signInBtn.href = '#';
-    }
-})()
-
-
+(async () => {
+  const userId = sessionStorage.getItem('userId');
+  if (userId) {
+    const users = await fetchUser(userId);
+    signInBtn.innerHTML = users.owner.name;
+    signInBtn.href = '#';
+  }
+})();
 
 const populateProduct = (product) => {
-  productDiv.innerHTML += `
-      <div class="product">
+  sectionTitle.innerHTML = 'All Products';
+  const article = document.createElement('article');
+  article.className = 'product';
+  article.innerHTML += `
               <div class="product-img">
                 <img src="../${product.Image}" alt="" />
               </div>
@@ -58,73 +53,77 @@ const populateProduct = (product) => {
 					<span> View Item</span>
                 </button>
               </div>
-            </div>
       `;
-};
+  productContainer.appendChild(article);
 
-const fetchProductByCategoryId = async (id) => {
-  productDiv.innerHTML = '';
-  const query = {
-    query: `
-        {
-            productsByCategory(id:"${id}"){
-                id
-                Image
-                Name
-                Price
-                Status{
-                    id
-                    Title
-                }
-            }
-        }
-    `,
-  };
-  const result = await fetchGraphql(query);
-  result.productsByCategory.forEach((aProduct) => {
-    populateProduct(aProduct);
+  article.addEventListener('click', () => {
+    populateProductDetails(product);
   });
 };
 
-const getAllProducts = async () => {
-  // Delete any products if available
-  productDiv.innerHTML = '';
-  const query = {
-    query: `
-          {
-              products{
-                  id
-                  Image
-                  Name
-                  Price
-                  Status{
-                      id
-                      Title
-                  }
-              }
-          }`,
-  };
+const populateProductDetails = (product) => {
+  sectionTitle.innerHTML = 'Product';
+  productContainer.innerHTML = '';
+  const article = document.createElement('article');
+  article.className = 'productItself';
+  article.innerHTML = `
+    <div class="product-main-img">
+      <div class="product-preview">
+        <img src="../${product.Image}" alt="" />
+      </div>
+    </div>
 
-  const result = await fetchGraphql(query);
-  result.products.forEach((aProduct) => {
-    populateProduct(aProduct);
+    <div class="product-details">
+      <h2 class="product-name">${product.Name}</h2>
+      <div>
+        <h3 class="product-price">${product.Price}€</h3>
+        <span class="product-available">${product.Status.Title}</span>
+      </div>
+      <p>
+      ${product.Description}
+      </p>
+
+      <ul class="product-btns">
+        <li>
+          <a href="#"><i class="fa fa-heart-o"></i> add to wishlist</a>
+        </li>
+      </ul>
+
+      <ul class="product-links">
+        <li>Category:</li>
+        <li><a href="#">${product.Category.Title}</a></li>
+      </ul>
+    </div>
+  `;
+  productContainer.appendChild(article);
+};
+
+const getProducts = async (id) => {
+  productContainer.innerHTML = '';
+  let myQuery;
+
+  const returnFields = `id\n Name\n Description\n Price\n Status{\n id\n Title\n }\n 
+  Category{\n id\n Title\n }\n Image\n Owner{\n id\n name\n }\n Location{\n coordinates\n }\n`;
+
+
+  if (id) {
+    myQuery = {
+      query: `{\n products(categoryId:"${id}"){\n ${returnFields}\n }\n }\n `,
+    };
+  } else {
+    myQuery = {
+      query: `{\n products{\n ${returnFields}\n }\n }\n `,
+    };
+  }
+  const result = await fetchGraphql(myQuery);
+  result.products.forEach((product) => {
+    populateProduct(product);
   });
 };
 
-window.addEventListener('load', getAllProducts);
-home.addEventListener('click', getAllProducts);
-electronics.addEventListener('click', () => {
-  fetchProductByCategoryId('5e9e119b54049654fbc5f2da');
+window.addEventListener('load', () => {
+  getProducts();
 });
-stationary.addEventListener('click', () => {
-  fetchProductByCategoryId('5e9e11a654049654fbc5f2db');
-});
-sports.addEventListener('click', () => {
-  fetchProductByCategoryId('5e9e11ab54049654fbc5f2dc');
-});
-fashion.addEventListener('click', () => {
-  fetchProductByCategoryId('5e9e11b754049654fbc5f2de');
-});
-others.addEventListener('click', () => {
-  fetchProductByCategoryId('5e9f393c6899885de294ca5e');
+home.addEventListener('click', () => {
+  getProducts();
 });
