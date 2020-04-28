@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="./css/chat.css" />
+    <!--===============================================================================================-->
+    <link type="text/css" rel="stylesheet" href="./css/header.css" />
+    <!--===============================================================================================-->
+  </head>
+
+  <header>
+    <div class="header">
+      <div class="header-right">
+        <img
+          onclick="location.replace('../index.html');"
+          src="./images/logo.png"
+          alt="IMG"
+        />
+      </div>
+
+      <h2 class="messages">Chat Messages</h2>
+      <!-- <div class="search-container">
+        <form action="/action_page.php">
+          <input type="text" placeholder="Search.." name="search" />
+          <button type="submit" class="search-btn">Search</button>
+        </form>
+      </div> -->
+
+      <div class="signin">
+        <i id="userIcon" class="fas fa-user fa-2x" aria-hidden="true"></i>
+        <a id="SignInBtn" href="signin.html">SignIn</a>
+      </div>
+    </div>
+  </header>
+
+  <body>
+    <ul class="messages-list"></ul>
+
+    <div class="write-message">
+      <form action="">
+        <input
+          id="messageInput"
+          autocomplete="off"
+          placeholder="Write a message here"
+          required
+        />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./js/main.js"></script>
+    <script src="./js/chat.js"></script>
+  </body>
+</html>

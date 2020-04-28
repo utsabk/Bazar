@@ -13,17 +13,15 @@
   const location = document.querySelector('input[name=location]');
   const image = document.querySelector('input[name=productImage]');
 
+  const errorMessage = document.querySelector('.error-message-section');
   // Fetch username if user is signed in
   const userId = sessionStorage.getItem('userId');
   if (userId) {
-    const users = await fetchUser(userId)
+    const users = await fetchUser(userId);
     signInBtn.innerHTML = users.owner.name;
     signInBtn.href = '#';
   }
-
-
-
-	// Populate category field
+  // Populate category field
   const categories = await fetchCategories();
   categories.categories.forEach((category) => {
     categoryOption.innerHTML += `<option value="${category.id}">${category.Title}</option>`;
@@ -41,7 +39,7 @@
     const formData = new FormData();
     const query = {
       query: `
-      mutation($file: Upload!){\n addProduct (
+      mutation($file: Upload!){\n product (
             Name:"${name.value}", 
             Description:"${description.value}",
             Price:${price.value},
@@ -58,5 +56,17 @@
     formData.append('map', '{"0":["variables.file"]}');
     formData.append('0', myFile);
     const result = await fetchFile(formData);
+    console.log('Result of upload:--', result);
+
+    if (result.product) {
+      errorMessage.innerHTML = '';
+      try {
+        window.location = '../index.html';
+      } catch (err) {
+        new Error(err.message);
+      }
+    } else {
+      errorMessage.innerHTML = 'Make sure all the fields are filled.';
+    }
   });
 })();

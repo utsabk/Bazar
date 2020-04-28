@@ -167,6 +167,16 @@ iframe {
     padding-bottom: 54px;
   }
   
+  .login100-form-errorMessage{
+    font-size:15px ;
+    color: #e02a12;
+    line-height: 1.2;
+    text-align: center;
+    width: 100%;
+    display: block;
+
+
+  }
   
   /*---------------------------------------------*/
   .wrap-input100 {

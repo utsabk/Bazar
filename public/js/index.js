@@ -4,16 +4,16 @@ const sectionTitle = document.querySelector('.section-title h3');
 const productContainer = document.querySelector('.products-cotainer');
 const home = document.getElementById('home');
 
-const signInBtn = document.getElementById('SignInBtn');
+// UserID stored in the session
+const userId = sessionStorage.getItem('userId')
 
 // Populate navigation bar fetching data from graphql
 const navBar = document.getElementById('navBar');
 (async () => {
   const categories = await fetchCategories();
-  console.log('Inside asyncs', categories);
   categories.categories.forEach((category) => {
     const list = document.createElement('li');
-    list.innerHTML += `<ahref="#">${category.Title}</a>`;
+    list.innerHTML += `<a href="#">${category.Title}</a>`;
 
     navBar.appendChild(list);
 
@@ -21,16 +21,6 @@ const navBar = document.getElementById('navBar');
       getProducts(category.id);
     });
   });
-})();
-
-// Fetch username if user is signed in
-(async () => {
-  const userId = sessionStorage.getItem('userId');
-  if (userId) {
-    const users = await fetchUser(userId);
-    signInBtn.innerHTML = users.owner.name;
-    signInBtn.href = '#';
-  }
 })();
 
 const populateProduct = (product) => {
@@ -66,14 +56,18 @@ const populateProductDetails = (product) => {
   productContainer.innerHTML = '';
   const article = document.createElement('article');
   article.className = 'productItself';
-  article.innerHTML = `
-    <div class="product-main-img">
+
+  const productImage = document.createElement('div');
+  productImage.className = 'product-main-img';
+  productImage.innerHTML = `
+      <div style="background-image: url('${product.Image}');" class="product-background"></div>
       <div class="product-preview">
         <img src="../${product.Image}" alt="" />
-      </div>
-    </div>
+      </div>`;
 
-    <div class="product-details">
+  const productDetails = document.createElement('div');
+  productDetails.className = 'product-details';
+  productDetails.innerHTML = `
       <h2 class="product-name">${product.Name}</h2>
       <div>
         <h3 class="product-price">${product.Price}€</h3>
@@ -92,10 +86,43 @@ const populateProductDetails = (product) => {
       <ul class="product-links">
         <li>Category:</li>
         <li><a href="#">${product.Category.Title}</a></li>
-      </ul>
-    </div>
-  `;
+      </ul>  `;
+
   productContainer.appendChild(article);
+
+  const sellerDetails = document.createElement('article');
+  sellerDetails.className = 'seller-details';
+  sellerDetails.innerHTML = `
+    <h3>Seller Info</h3>
+    <div class="seller-chip">
+      <img src="../${product.Image}" alt="user" width="96" height="96" />
+      <h3>${product.Owner.name}</h3> 
+    </div>
+    <ul class="more-details">
+      <li><i class="fa fa-envelope" aria-hidden="true"></i>${product.Owner.email}</li>
+      <li><i class="fa fa-phone" aria-hidden="true"></i>${product.Owner.phone}</li>
+    </ul>`;
+
+  const askDetailsBtn = document.createElement('button');
+  askDetailsBtn.innerHTML = 'Ask for details';
+
+  askDetailsBtn.addEventListener('click', (event) => {
+    if (userId) {
+      location.replace('../chat.html');
+    } else {
+      alert('Please sign in first');
+    }
+  });
+
+  // productDetails.innerHTML += sellerDetails.outerHTML + askDetailsBtn.outerHTML;
+
+  productDetails.appendChild(sellerDetails);
+  productDetails.appendChild(askDetailsBtn);
+
+  //article.innerHTML += productImage.outerHTML + productDetails.outerHTML;
+
+  article.appendChild(productImage);
+  article.appendChild(productDetails);
 };
 
 const getProducts = async (id) => {
@@ -103,8 +130,7 @@ const getProducts = async (id) => {
   let myQuery;
 
   const returnFields = `id\n Name\n Description\n Price\n Status{\n id\n Title\n }\n 
-  Category{\n id\n Title\n }\n Image\n Owner{\n id\n name\n }\n Location{\n coordinates\n }\n`;
-
+  Category{\n id\n Title\n }\n Image\n Owner{\n id\n name\n email\n phone\n dp\n }\n Location{\n coordinates\n }\n`;
 
   if (id) {
     myQuery = {
@@ -116,8 +142,8 @@ const getProducts = async (id) => {
     };
   }
   const result = await fetchGraphql(myQuery);
-  result.products.forEach((product) => {
-    populateProduct(product);
+  result.products.forEach(async (product) => {
+    await populateProduct(product);
   });
 };
 

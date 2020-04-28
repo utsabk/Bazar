@@ -106,5 +106,17 @@ form {
   margin: 0 1rem;
 }
 
+.error-message-section{
+  font-size:24px ;
+  color: #e02a12;
+  line-height: 1.2;
+  text-align: center;
+  width: 100%;
+  display: block;
+
+
+}
+
+
 
 

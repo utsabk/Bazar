@@ -148,7 +148,7 @@ const Mutation = new GraphQLObjectType({
   name: 'Mutation',
   description: 'Mutation query',
   fields: {
-    addProduct: {
+    product: {
       type: productType,
       description: 'Add product',
       args: {

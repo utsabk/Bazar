@@ -1,0 +1,104 @@
+body {
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.header .messages {
+  align-self: center;
+}
+.container {
+  border: 2px solid #dedede;
+  background-color: #f1f1f1;
+  border-radius: 10px;
+  padding: 10px 0px 0px 10px;
+  margin: 10px 0;
+}
+.container .seller-chip {
+  display: flex;
+  height: 20px;
+  font-size: 14px;
+}
+
+.container .seller-chip img {
+  margin: 0 -10px;
+  height: 50px;
+  max-width: 50px;
+  width: 100%;
+  margin-right: 20px;
+  border-radius: 50%;
+}
+.container p {
+  margin-left: 50px;
+  font-size: 24px;
+}
+
+.green {
+  border-color: #ccc;
+  background-color: rgba(197, 238, 144, 0.835);
+  align-self: right;
+}
+.white {
+  border-color: #ccc;
+  background-color: rgba(122, 178, 223, 0.959);
+  align-self: left;
+}
+
+.container::after {
+  content: '';
+  clear: both;
+  display: table;
+}
+
+.time {
+  float: right;
+}
+
+.write-message {
+  width: 90%;
+  padding: 10px;
+  position: absolute;
+  bottom: 0;
+  left:70px;
+  background: #3a2052;
+  background: -webkit-linear-gradient(-135deg, #64205b, #152361);
+  background: -o-linear-gradient(-135deg, #64205b, #152361);
+  background: -moz-linear-gradient(-135deg, #64205b, #152361);
+  background: linear-gradient(-135deg, #64205b, #152361);
+}
+.write-message form input {
+  width: 85%;
+  height: 40px;
+  font-size: 16px;
+  padding: 0px 16px;
+  margin-right: -4px;
+  border: 1px solid #e4e7ed;
+  background-color: #fff;
+}
+.write-message form button {
+  height: 40px;
+  width: 12%;
+  background: #d10024;
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 0px 40px 40px 0px;
+  float: right;
+}
+.messages-list {
+  list-style-type: none;
+  margin: 40px 40px 70px 40px;
+  padding: 0;
+}
+
+/*------------------------------------------------------------------
+  [ Responsive ]*/
+
+@media (max-width: 1110px) {
+  .write-message {
+    width: 80%;
+  }
+
+  .write-message form input {
+    width: 84%;
+  }
+}
