@@ -20,6 +20,7 @@ const {
   productStatusType,
   productType,
   ownerType,
+  chatType,
   InputLocationType,
 } = require('./types');
 
@@ -30,6 +31,7 @@ const productSchema = require('../models/product');
 const categorySchema = require('../models/category');
 const statusSchema = require('../models/productStatus');
 const userSchema = require('../models/user');
+const Chat = require('../models/chat');
 const resize = require('../utils/resize');
 
 const RootQuery = new GraphQLObjectType({
@@ -63,8 +65,8 @@ const RootQuery = new GraphQLObjectType({
     product: {
       type: productType,
       description: 'Get a product by ID',
-      args:{
-      id:{type:GraphQLID}
+      args: {
+        id: { type: GraphQLID },
       },
       resolve: async (parent, args) => {
         try {
@@ -77,15 +79,18 @@ const RootQuery = new GraphQLObjectType({
     products: {
       type: new GraphQLNonNull(new GraphQLList(productType)),
       description: 'Get all the products',
-      args:{
-      categoryId:{type: GraphQLID}
+      args: {
+        categoryId: { type: GraphQLID },
       },
       resolve: async (parent, args) => {
         try {
-          if(args.categoryId){
-            return await productSchema.find({Category:{
-              _id:  args.categoryId }});
-          }else{
+          if (args.categoryId) {
+            return await productSchema.find({
+              Category: {
+                _id: args.categoryId,
+              },
+            });
+          } else {
             return await productSchema.find();
           }
         } catch (err) {
@@ -119,7 +124,7 @@ const RootQuery = new GraphQLObjectType({
         }
       },
     },
-    
+
     categories: {
       type: new GraphQLList(categoryType),
       description: 'Get all the category',
@@ -131,12 +136,25 @@ const RootQuery = new GraphQLObjectType({
         }
       },
     },
+
     productStatus: {
       type: new GraphQLList(productStatusType),
       description: 'Get all the product status',
       resolve: async (parent, args) => {
         try {
           return await statusSchema.find();
+        } catch (err) {
+          return new Error(err.message);
+        }
+      },
+    },
+
+    chats: {
+      type: new GraphQLList(chatType),
+      description: 'Get all the messages',
+      resolve: async (parent, args) => {
+        try {
+          return await Chat.find();
         } catch (err) {
           return new Error(err.message);
         }
@@ -171,7 +189,9 @@ const Mutation = new GraphQLObjectType({
           const file = await new Promise(async (resolve, reject) => {
             const createdFile = await createReadStream()
               .pipe(resize(300))
-              .pipe(createWriteStream(__dirname + `/../public/uploads/${filename}`))
+              .pipe(
+                createWriteStream(__dirname + `/../public/uploads/${filename}`)
+              )
               .on('finish', () => resolve(createdFile))
               .on('error', () => reject(false));
           });

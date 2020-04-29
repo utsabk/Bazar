@@ -70,16 +70,16 @@ const fetchUser = async (userId) => {
 };
 
 // User Id saved in the session
-const userID =  sessionStorage.getItem('userId');
+const userID = sessionStorage.getItem('userId');
 
-const fetchUserName = async(uID)=>{
-  try{
-    const user = await fetchUser(uID)
-    return user.owner.name
-  }catch(err){
-    new Error(err.message)
+const fetchUserName = async (uID) => {
+  try {
+    const user = await fetchUser(uID);
+    return user.owner.name;
+  } catch (err) {
+    new Error(err.message);
   }
-}
+};
 
 // Populate username if user is signed in
 (async () => {
@@ -89,6 +89,50 @@ const fetchUserName = async(uID)=>{
     const username = await fetchUserName(userID);
     signInBtn.innerHTML = username;
     signInBtn.href = '#';
-    userIcon.className = ''
+    userIcon.className = '';
   }
 })();
+
+const timeAgo = (time) => {
+  let result;
+
+  const difference = Date.now() - time;
+
+  if (difference < 5 * 1000) {
+    return 'just now';
+  } else if (difference < 90 * 1000) {
+    return 'moments ago';
+  }
+
+  //it has minutes
+  if ((difference % 1000) * 3600 > 0) {
+    if (Math.floor((difference / 1000 / 60) % 60) > 0) {
+      let s = Math.floor((difference / 1000 / 60) % 60) == 1 ? '' : 's';
+      result = `${Math.floor((difference / 1000 / 60) % 60)} minute${s} `;
+    }
+  }
+
+  //it has hours
+  if ((difference % 1000) * 3600 * 60 > 0) {
+    if (Math.floor((difference / 1000 / 60 / 60) % 24) > 0) {
+      let s = Math.floor((difference / 1000 / 60 / 60) % 24) == 1 ? '' : 's';
+      result =
+        `${Math.floor((difference / 1000 / 60 / 60) % 24)} hour${s}${
+          result == '' ? '' : ','
+        } ` + result;
+    }
+  }
+
+  //it has days
+  if ((difference % 1000) * 3600 * 60 * 24 > 0) {
+    if (Math.floor(difference / 1000 / 60 / 60 / 24) > 0) {
+      let s = Math.floor(difference / 1000 / 60 / 60 / 24) == 1 ? '' : 's';
+      result =
+        `${Math.floor(difference / 1000 / 60 / 60 / 24)} day${s}${
+          result == '' ? '' : ','
+        } ` + result;
+    }
+  }
+
+  return result + ' ago';
+};

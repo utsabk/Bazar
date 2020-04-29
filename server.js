@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const db = require('./db/database');
+const Chat = require('./models/chat');
 const graphqlSchema = require('./schema/schema');
 
 const app = express();
@@ -61,12 +62,27 @@ io.on('connection', (socket) => {
   });
 
   socket.on('send message', (user, msg) => {
-    console.log('message: ', msg);
-    console.log('user', user);
     io.emit('new message', {
       message: msg,
-      username: user,
+      sender: user,
       socketID: socket.id,
     });
+
+    (async () => {
+      console.log('message: ', msg);
+      console.log('user', user);
+      try {
+        let chatMessage = new Chat({
+          message: msg,
+          sender: user,
+        });
+
+        return await chatMessage.save();
+      } catch (err) {
+        new Error(err.message);
+      }
+    })();
+
+
   });
 });

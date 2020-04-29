@@ -97,15 +97,26 @@ const ownerType = new GraphQLObjectType({
       type: new GraphQLList(productType),
       resolve: async (parent, args) => {
         try {
-          return await productSchema.find({ 
-            Owner: parent.id
-           });
+          return await productSchema.find({
+            Owner: parent.id,
+          });
         } catch (e) {
           return new Error(e.message);
         }
       },
     },
     token: { type: GraphQLString },
+  }),
+});
+
+const chatType = new GraphQLObjectType({
+  name: 'chattype',
+  fields: () => ({
+    id: { type: GraphQLID },
+    message: { type: GraphQLString },
+    sender: { type: GraphQLString },
+    createdAt: { type: GraphQLString },
+    updatedAt: { type: GraphQLString },
   }),
 });
 
@@ -131,6 +142,7 @@ module.exports = {
   productStatusType,
   productType,
   ownerType,
+  chatType,
   InputLocationType,
   InputWithTitle,
 };

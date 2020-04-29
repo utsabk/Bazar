@@ -4,9 +4,6 @@ const sectionTitle = document.querySelector('.section-title h3');
 const productContainer = document.querySelector('.products-cotainer');
 const home = document.getElementById('home');
 
-// UserID stored in the session
-const userId = sessionStorage.getItem('userId')
-
 // Populate navigation bar fetching data from graphql
 const navBar = document.getElementById('navBar');
 (async () => {
@@ -102,22 +99,21 @@ const populateProductDetails = (product) => {
       <li><i class="fa fa-envelope" aria-hidden="true"></i>${product.Owner.email}</li>
       <li><i class="fa fa-phone" aria-hidden="true"></i>${product.Owner.phone}</li>
     </ul>`;
+  productDetails.appendChild(sellerDetails);
 
-  const askDetailsBtn = document.createElement('button');
-  askDetailsBtn.innerHTML = 'Ask for details';
+  
+  // Check product owner and authorization
+  if (product.Owner.id != userID && userID ) {
+    const askDetailsBtn = document.createElement('button');
+    askDetailsBtn.innerHTML = 'Ask for details';
+    productDetails.appendChild(askDetailsBtn);
 
-  askDetailsBtn.addEventListener('click', (event) => {
-    if (userId) {
+    askDetailsBtn.addEventListener('click', (event) => {
       location.replace('../chat.html');
-    } else {
-      alert('Please sign in first');
-    }
-  });
+    });
+  }
 
   // productDetails.innerHTML += sellerDetails.outerHTML + askDetailsBtn.outerHTML;
-
-  productDetails.appendChild(sellerDetails);
-  productDetails.appendChild(askDetailsBtn);
 
   //article.innerHTML += productImage.outerHTML + productDetails.outerHTML;
 

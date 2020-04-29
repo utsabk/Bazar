@@ -56,9 +56,9 @@ body {
 .write-message {
   width: 90%;
   padding: 10px;
-  position: absolute;
+  position: fixed;
   bottom: 0;
-  left:70px;
+  margin-left:70px;
   background: #3a2052;
   background: -webkit-linear-gradient(-135deg, #64205b, #152361);
   background: -o-linear-gradient(-135deg, #64205b, #152361);
