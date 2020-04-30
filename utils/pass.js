@@ -51,7 +51,7 @@ passport.use(
         //   email: user.email,
         //   full_name: user.full_name,
         // };
-        const strippedUser = await userJModel.findById(
+        const strippedUser = await userModel.findById(
           jwtPayload._id,
           '-password-__v'
         );

@@ -41,40 +41,43 @@ db.on('connected', () => {
 });
 
 // Socket
-
-let connectedSockets = [];
-
 io.on('connection', (socket) => {
   console.log('a user connected', socket.id);
-  connectedSockets.push(socket.id);
-  io.emit('newConnection', {
-    myID: socket.id,
-    connections: connectedSockets,
+
+  socket.emit('newConnection', socket.id);
+
+  socket.on('new user', (data) => {
+    socket.join(data.userID); // Joined a room with userId
   });
 
-  socket.on('disconnect', () => {
-    console.log('a user disconnected', socket.id);
-    connectedSockets = connectedSockets.filter((value) => value != socket.id);
-    io.emit('connectionLost', {
-      lostID: socket.id,
-      connections: connectedSockets,
-    });
-  });
-
-  socket.on('send message', (user, msg) => {
-    io.emit('new message', {
-      message: msg,
-      sender: user,
-      socketID: socket.id,
+  socket.on('send message', (data) => {
+    // Send message to client itself
+    socket.emit('new message', {
+      message: data.message,
+      sender: {
+        name: data.username,
+        id: data.userID,
+      },
     });
 
+    // This sends messages to specific room excludes sender
+    // Since the room is created with username messages are sent to
+    // all the instances created with same username even though socket id are different
+    socket.to(data.productOwner).emit('new message', {
+      message: data.message,
+      sender: {
+        name: data.username,
+        id: data.userID,
+      },
+    });
+
+    // Save data in the database
     (async () => {
-      console.log('message: ', msg);
-      console.log('user', user);
       try {
         let chatMessage = new Chat({
-          message: msg,
-          sender: user,
+          message: data.message,
+          sender: data.userID,
+          sendTo: data.productOwner,
         });
 
         return await chatMessage.save();
@@ -82,7 +85,5 @@ io.on('connection', (socket) => {
         new Error(err.message);
       }
     })();
-
-
   });
 });

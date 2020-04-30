@@ -109,7 +109,7 @@ const populateProductDetails = (product) => {
     productDetails.appendChild(askDetailsBtn);
 
     askDetailsBtn.addEventListener('click', (event) => {
-      location.replace('../chat.html');
+      location.replace('../chat.html?' + product.Owner.id);
     });
   }
 

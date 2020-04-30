@@ -54,7 +54,7 @@ const productType = new GraphQLObjectType({
         try {
           return await statusSchema.findById(parent.Status);
         } catch (e) {
-          return new Error(e.message);
+          throw new Error(e.message);
         }
       },
     },
@@ -64,7 +64,7 @@ const productType = new GraphQLObjectType({
         try {
           return await categorySchema.findById(parent.Category);
         } catch (e) {
-          return new Error(e.message);
+          throw new Error(e.message);
         }
       },
     },
@@ -75,7 +75,7 @@ const productType = new GraphQLObjectType({
         try {
           return await userSchema.findById(parent.Owner);
         } catch (e) {
-          return new Error(e.message);
+          throw new Error(e.message);
         }
       },
     },
@@ -101,7 +101,7 @@ const ownerType = new GraphQLObjectType({
             Owner: parent.id,
           });
         } catch (e) {
-          return new Error(e.message);
+          throw new Error(e.message);
         }
       },
     },
@@ -114,7 +114,27 @@ const chatType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLID },
     message: { type: GraphQLString },
-    sender: { type: GraphQLString },
+    sender: {
+      type: new GraphQLNonNull(ownerType),
+      resolve: async (parent, args) => {
+        try {
+          return await userSchema.findById(parent.sender);
+        } catch (e) {
+          throw new Error(e.message);
+        }
+      }
+    },
+    sendTo:{
+      type: new GraphQLNonNull(ownerType),
+      resolve: async (parent, args) => {
+        try {
+          return await userSchema.findById(parent.sendTo);
+        } catch (e) {
+          throw new Error(e.message);
+        }
+      }
+    },
+    sendBetween:{ type: GraphQLString },
     createdAt: { type: GraphQLString },
     updatedAt: { type: GraphQLString },
   }),

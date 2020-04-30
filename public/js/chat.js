@@ -5,52 +5,65 @@ const socket = io();
 const form = document.querySelector('.write-message form');
 const input = document.getElementById('messageInput');
 const messages = document.querySelector('.messages-list');
-
-let username;
+const productOwner = location.href.split('?').pop();
 
 (async () => {
   if (userID) {
-    username = await fetchUserName(userID);
+    const username = await fetchUserName(userID);
+
     form.addEventListener('submit', () => {
-      console.log('inside form username:-', username);
       event.preventDefault();
-      socket.emit('send message', username, input.value);
+      socket.emit('send message', {
+        userID,
+        username,
+        message: input.value,
+        productOwner,
+      });
       input.value = '';
     });
   }
 })();
 
+// Fetch chats from history
 (async () => {
   const query = {
     query: `{
-      chats{\n id\n message\n sender\n createdAt\n updatedAt\n}
+        chats(\n senderID:"${userID}",
+        sendToID:"${productOwner}"){
+        id
+        message
+        sender{\n id\n name\n}\n
+        sendTo{\n id\n name\n }\n
+        createdAt
+        updatedAt
+      }
     }`,
   };
-  const data = await fetchGraphql(query);
 
-  data.chats.forEach((chat) => {
-    populateMessages(chat, chat.createdAt);
-  });
-  return data;
+  try {
+    const data = await fetchGraphql(query);
+    console.log('data', data);
+    data.chats.forEach((chat) => {
+      populateMessages(chat, chat.createdAt);
+    });
+  } catch (err) {
+    throw new Error(err.message);
+  }
 })();
 
-socket.on('newConnection', (data) => {
-  console.log('newConnection data:-', data);
-  sessionStorage.setItem('socketID', data.myID);
+socket.on('newConnection', (id) => {
+  socket.emit('new user',{userID, id});
 });
 
-socket.on('connectionLost', (data) => {
-  console.log('connectionLost data:-', data);
-});
 
 const populateMessages = (data, time) => {
-  if (username == data.sender) {
+  if (userID == data.sender.id) {
     const item = document.createElement('div');
     item.className = 'container green';
     item.innerHTML = `
                     <div class="seller-chip">
                     <img src="./img/shop01.png" alt="Avatar" class="right" style="width:100%;">
-                    <h3>${data.sender}</h3> 
+                    <h3>${data.sender.name}</h3> 
                     </div>
                     <p>${data.message}</p>
                     <span class="time">${timeAgo(time)}</span>`;
@@ -61,7 +74,7 @@ const populateMessages = (data, time) => {
     item.innerHTML = `
                 <div class="seller-chip">
                 <img src="./img/shop01.png" alt="Avatar" style="width:100%;">
-                <h3>${data.sender}</h3> 
+                <h3>${data.sender.name}</h3> 
                 </div>
                 <p>${data.message}</p>
                 <span class="time">${timeAgo(time)}</span>`;

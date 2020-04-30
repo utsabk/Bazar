@@ -72,7 +72,7 @@ const RootQuery = new GraphQLObjectType({
         try {
           return await productSchema.findById(args.id);
         } catch (err) {
-          return new Error(err.message);
+          throw new Error(err.message);
         }
       },
     },
@@ -94,7 +94,7 @@ const RootQuery = new GraphQLObjectType({
             return await productSchema.find();
           }
         } catch (err) {
-          return new Error(err.message);
+          throw new Error(err.message);
         }
       },
     },
@@ -106,10 +106,9 @@ const RootQuery = new GraphQLObjectType({
       },
       resolve: async (parent, args) => {
         try {
-          console.log('ownerById args ', args);
           return await userSchema.findById(args.id);
         } catch (err) {
-          return new Error(err.message);
+          throw new Error(err.message);
         }
       },
     },
@@ -120,7 +119,7 @@ const RootQuery = new GraphQLObjectType({
         try {
           return await userSchema.find();
         } catch (err) {
-          return new Error(err.message);
+          throw new Error(err.message);
         }
       },
     },
@@ -132,7 +131,7 @@ const RootQuery = new GraphQLObjectType({
         try {
           return await categorySchema.find();
         } catch (err) {
-          return new Error(err.message);
+          throw new Error(err.message);
         }
       },
     },
@@ -144,19 +143,34 @@ const RootQuery = new GraphQLObjectType({
         try {
           return await statusSchema.find();
         } catch (err) {
-          return new Error(err.message);
+          throw new Error(err.message);
         }
       },
     },
 
     chats: {
       type: new GraphQLList(chatType),
-      description: 'Get all the messages',
-      resolve: async (parent, args) => {
+      description: 'Get all the messages authentication required',
+      args: {
+        senderID: { type: GraphQLID },
+        sendToID: { type: GraphQLID },
+      },
+      resolve: async (parent, args, { req, res }) => {
         try {
-          return await Chat.find();
+          await authController.checkAuth(req, res);
+          if (args.senderID && args.sendToID) {
+            return await Chat.find().and([
+              { $or: [{ sender: args.senderID }, { sender: args.sendToID }] },
+              { $or: [{ sendTo: args.sendToID }, { sendTo: args.senderID }] },
+            ]);
+
+            // return await Chat.find({sender:args.senderID, sendTo: args.sendToID});
+          } else {
+            return await Chat.find();
+          }
         } catch (err) {
-          return new Error(err.message);
+          console.log('Error fetching data from database:-', err);
+          throw new Error(err.message);
         }
       },
     },
@@ -200,10 +214,8 @@ const Mutation = new GraphQLObjectType({
             ...args,
             Image: 'uploads/' + filename,
           });
-          console.log('newProduct', newProduct);
           return await newProduct.save();
         } catch (err) {
-          console.log("I'm inside error");
           throw new Error(err);
         }
       },
@@ -219,7 +231,6 @@ const Mutation = new GraphQLObjectType({
         },
       },
       async resolve(parent, args) {
-        console.log('uploadImage args', args);
         try {
           const { filename, mimetype, createReadStream } = await args.image;
           const file = await new Promise(async (resolve, reject) => {
@@ -246,7 +257,6 @@ const Mutation = new GraphQLObjectType({
         DP: { type: GraphQLString },
       },
       resolve: async (parent, args) => {
-        console.log('AddOwner args:--', args);
         try {
           const newOwner = new userSchema({ ...args });
           return await newOwner.save();
@@ -263,7 +273,6 @@ const Mutation = new GraphQLObjectType({
         Title: { type: new GraphQLNonNull(GraphQLString) },
       },
       resolve: async (parent, args) => {
-        console.log('addCategory args:--', args);
         try {
           const newCategory = new categorySchema({ ...args });
           return await newCategory.save();
@@ -279,7 +288,6 @@ const Mutation = new GraphQLObjectType({
         Title: { type: new GraphQLNonNull(GraphQLString) },
       },
       resolve: async (parent, args) => {
-        console.log('addStatus args:--', args);
         try {
           const newStatus = new statusSchema({ ...args });
           return await newStatus.save();
@@ -298,7 +306,6 @@ const Mutation = new GraphQLObjectType({
         phone: { type: GraphQLString },
       },
       resolve: async (parent, args, { req, res }) => {
-        console.log('Register args:', args);
         try {
           const hash = await bcrypt.hash(args.password, saltRound);
           const newArgs = { ...args, password: hash };
@@ -308,12 +315,9 @@ const Mutation = new GraphQLObjectType({
           const result = await newUser.save();
 
           if (result !== null) {
-            console.log('Im inside if clause');
             req.body = args;
             req.body.username = args.email;
-            console.log('req.body', req.body);
             const response = await authController.auth(req, res);
-            console.log('ar', response);
             return {
               id: response.user._id,
               ...response.user,
@@ -323,7 +327,7 @@ const Mutation = new GraphQLObjectType({
             throw new Error('insert fail');
           }
         } catch (err) {
-          new Error(err.message);
+          throw new Error(err.message);
         }
       },
     },

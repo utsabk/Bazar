@@ -8,7 +8,9 @@ const fetchGraphql = async (query) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Accept: 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+
     },
     body: JSON.stringify(query),
   };
@@ -28,7 +30,7 @@ const fetchFile = async (fd) => {
     method: 'POST',
     headers: {
       Accept: 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem('token'),
+      Authorization: 'Bearer ' + sessionStorage.getItem('token'),
     },
     body: fd,
   };
@@ -71,6 +73,9 @@ const fetchUser = async (userId) => {
 
 // User Id saved in the session
 const userID = sessionStorage.getItem('userId');
+
+// Socket Id saved in the session
+
 
 const fetchUserName = async (uID) => {
   try {

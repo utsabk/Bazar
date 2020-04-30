@@ -24,6 +24,22 @@ const auth = (req, res) => {
   });
 };
 
+
+const checkAuth = (req, res) => {
+  return new Promise((resolve, reject) => {
+   //console.log('Checkauth request',req)
+    passport.authenticate('jwt', (err, user) => {
+      if (err || !user) {
+        console.log('Error inside checkauth:-',user)
+        reject('Not authenticated or user expired');
+      }
+      resolve(user);
+    })(req, res);
+  });
+};
+
+
 module.exports = {
   auth,
+  checkAuth,
 };
