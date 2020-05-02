@@ -1,12 +1,22 @@
 'use strict';
 
 const productContainer = document.querySelector('.products-cotainer');
+
+const updateForm = document.getElementById('product-form');
+const nameInput = document.querySelector('input[name=name]');
+const descriptionInput = document.querySelector('textarea[name=description]');
+const priceInput = document.querySelector('input[name=price]');
+const statusOption = document.getElementById('status');
+const deleteBtn = document.querySelector('.delete-btn');
+
+const modal = document.getElementById('myModal');
+const btn = document.getElementById('myBtn');
+const span = document.getElementsByClassName('close')[0];
+
 const productId = location.href.split('?').pop();
 
 (async () => {
-  console.log('productId', productId);
   const result = await fetchProduct(productId);
-  console.log('This is a product:-', result.product);
   populateProductDetails(result.product);
 })();
 
@@ -76,10 +86,98 @@ const populateProductDetails = (product) => {
       productDetails.appendChild(editItem);
 
       editItem.addEventListener('click', () => {
-        console.log('Edit item clicked');
+        modal.style.display = 'block';
+        fillModal(product);
+      });
+
+      deleteBtn.addEventListener('click', async () => {
+        const result = await deleteProduct(product.id);
+        try {
+          if (result.deleteProduct.id) {
+            location.replace('../index.html');
+          }
+        } catch (err) {
+          console.log('User decided to withdraw the delete action');
+        }
+      });
+
+      updateForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const result = await updateProduct(product.id);
+        if (result.modifyProduct.id) {
+          modal.style.display = 'none';
+          location.reload();
+        } else {
+          alert('Something went wrong');
+        }
       });
     }
   }
   article.appendChild(productImage);
   article.appendChild(productDetails);
+
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function () {
+    modal.style.display = 'none';
+  };
+
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function (event) {
+    if (event.target == modal) {
+      modal.style.display = 'none';
+    }
+  };
+
+  // <!--===============================================================================================-->
+
+  // Populate product status  field
+  (async () => {
+    const status = await fetchProductStatus();
+    status.productStatus.forEach((status) => {
+      statusOption.innerHTML += `<option value="${status.id}">${status.Title}</option>`;
+    });
+  })();
+
+  const fillModal = (product) => {
+    updateForm.scrollIntoView();
+    nameInput.value = product.Name;
+    descriptionInput.value = product.Description;
+    priceInput.value = product.Price;
+  };
+
+  const deleteProduct = async (id) => {
+    const conf = confirm('Are you sure you want to delete this product?');
+    if (!conf) return;
+    const query = {
+      query: `mutation\n {\n deleteProduct(id: "${id}"){\n id \n} \n}`,
+    };
+    try {
+      const data = await fetchGraphql(query);
+      console.log('data', data);
+      return data;
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
+
+  const updateProduct = async (id) => {
+    const query = {
+      query: `
+      mutation{\n modifyProduct (
+            id:"${id}",
+            Name:"${nameInput.value}", 
+            Description:"${descriptionInput.value}",
+            Price:${priceInput.value},
+            Status:"${statusOption.value}",
+        )
+        {\n id\n Name\n } 
+     }`,
+    };
+    try {
+      const result = await fetchGraphql(query);
+      return result;
+    } catch (err) {
+      console.log('Err while updating product:-', err);
+    }
+  };
 };

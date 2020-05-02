@@ -113,7 +113,18 @@ form {
   text-align: center;
   width: 100%;
   display: block;
+}
 
+.delete-btn{
+  text-align: center;
+  font-size: 1.5rem;
+  width: 100%;
+  border: 1px solid gray;
+  color: gray;
+  padding: 8px 20px;
+  border-radius: 8px;
+  opacity: 1;
+  background-color: #cf1010f1;
 
 }
 

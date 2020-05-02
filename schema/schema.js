@@ -199,7 +199,7 @@ const Mutation = new GraphQLObjectType({
         Owner: { type: GraphQLID },
         Location: { type: InputLocationType },
       },
-      resolve: async (parent, args, {req, res}) => {
+      resolve: async (parent, args, { req, res }) => {
         console.log('addProduct args:--', args);
         try {
           authController.checkAuth(req, res);
@@ -229,24 +229,30 @@ const Mutation = new GraphQLObjectType({
       description: 'Uploads an image.',
       type: GraphQLUpload,
       args: {
-        id: {type: GraphQLID},
+        id: { type: GraphQLID },
         image: {
           description: 'Image file.',
           type: GraphQLUpload,
         },
       },
-      async resolve(parent, args,{req, res}) {
+      async resolve(parent, args, { req, res }) {
         try {
-         authController.checkAuth(req, res);
+          await authController.checkAuth(req, res);
           const { filename, mimetype, createReadStream } = await args.image;
           const file = await new Promise(async (resolve, reject) => {
             const createdFile = await createReadStream()
               .pipe(resize(300))
-              .pipe(createWriteStream(__dirname + `/../public/profile/${filename}`))
+              .pipe(
+                createWriteStream(__dirname + `/../public/profile/${filename}`)
+              )
               .on('finish', () => resolve(createdFile))
               .on('error', () => reject(false));
           });
-          return await userSchema.findByIdAndUpdate(args.id,  {dp: 'profile/' + filename}, {new: true})
+          return await userSchema.findByIdAndUpdate(
+            args.id,
+            { dp: 'profile/' + filename },
+            { new: true }
+          );
         } catch (err) {
           throw new Error(err);
         }
@@ -335,6 +341,50 @@ const Mutation = new GraphQLObjectType({
           }
         } catch (err) {
           throw new Error(err.message);
+        }
+      },
+    },
+    modifyProduct: {
+      type: productType,
+      description: 'Modify a product, authentication required',
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+        Name: { type: GraphQLString },
+        Description: { type: GraphQLString },
+        Price: { type: GraphQLFloat },
+        Status: { type: new GraphQLNonNull(GraphQLID) },
+      },
+      resolve: async (parent, args, { req, res }) => {
+        try {
+         await authController.checkAuth(req, res);
+          return await productSchema.findByIdAndUpdate(
+            args.id,
+            {
+              Name: args.Name,
+              Description: args.Description,
+              Price: args.Price,
+              Status: args.Status,
+            },
+            { new: true }
+          );
+        } catch (err) {
+          throw new Error(err);
+        }
+      },
+    },
+
+    deleteProduct: {
+      type: productType,
+      description: 'Delete a product, authentication required',
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+      },
+      resolve: async (parent, args, { req, res }) => {
+        try {
+          authController.checkAuth(req, res);
+          return await productSchema.findByIdAndDelete(args.id);
+        } catch (err) {
+          throw new Error(err);
         }
       },
     },
