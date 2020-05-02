@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!--===============================================================================================-->
+    <title>Sell Item</title>
+    <!--===============================================================================================-->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--===============================================================================================-->
+    <link href="./modules/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet"/>
+    <!--===============================================================================================-->
+    <link type="text/css" rel="stylesheet" href="./css/shop.css" />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="./css/header.css" />
+    <!--===============================================================================================-->
+  </head>
+
+  <header>
+    <div class="header">
+      <div class="header-right">
+        <img src="./images/logo.png" onclick="location.href='./index.html'" alt="IMG" />
+      </div>
+
+      <div class="search-container">
+        <form>
+          <input type="text" placeholder="Search.." name="search" />
+          <button class="search-btn">Search</button>
+        </form>
+      </div>
+
+      <div class="signin">
+        <i id="userIcon" class="fas fa-user fa-2x" aria-hidden="true"></i>
+        <a id="SignInBtn" href="signin.html">SignIn</a>
+      </div>
+    </div>
+  </header>
+
+  <body>
+
+    <!-- SECTION -->
+    <div  class="section">
+      <div class="section-title">
+        <h3 class="title">Product</h3>
+      </div>
+      <div class="products-cotainer"></div>
+    </div>
+	<!-- /SECTION -->
+	  <script src="./js/main.js"></script>
+    <script src="./js/productdetails.js"></script>
+  </body>
+</html>

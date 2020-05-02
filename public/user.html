@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html class="no-js" lang="">
+  <head>
+    <meta charset="UTF-8">
+    <link href="./modules/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">    
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--===============================================================================================-->
+    <link rel="stylesheet"  type="text/css" href="./css/user.css" />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="./css/header.css" />
+    <!--===============================================================================================-->
+  
+  </head>
+<header>
+    <div class="header">
+        <div class="header-right">
+          <img
+            onclick="location.replace('../index.html');"
+            src="./images/logo.png"
+            alt="IMG"
+          />
+        </div>
+        
+        <div class="header-middle">
+            <a  href="./index.html">Shop</a>
+            <a  href="./upload.html">Sell</a>
+          
+        </div>
+        <div class="signin">
+          <i id="userIcon" class="fas fa-user fa-2x" aria-hidden="true"></i>
+          <a id="SignInBtn" href="signin.html">SignIn</a>
+        </div>
+      </div>
+</header>
+	<div class="container">
+
+		<div class="profile">
+
+			<div class="profile-image">
+
+				<img src="http://goo.gl/vyAs27" alt="">
+
+			</div>
+
+			<div class="profile-user-settings">
+
+				<h1 class="profile-user-name"></h1>
+
+				<button class="btn profile-edit-btn">
+          <input  id="img" type="file" accept="image/*" style="display:none;" />
+          <label id="label"  for="img">Upload image</label>
+        </button>
+
+				<!-- <button class="btn profile-settings-btn" aria-label="profile settings"><i class="fas fa-cog" aria-hidden="true"></i></button> -->
+
+			</div>
+
+			<div class="profile-stats">
+
+				<ul>
+					<li class="profile-stat-count ">
+                        <i class="fas fa-envelope">
+                            <span id="email" ></span>
+                        </i>
+                     </li>
+					<li class="profile-stat-count ">
+                        <i  class="fas fa-phone">
+                            <span id="phone"></span>
+                        </i> 
+                    </li>
+					<li class="profile-stat-count">
+                        <i style="font-style: normal;font-family: -webkit-pictograph;">
+                            Products:
+                        </i>
+                        <span class="products"></span>
+                    </li>
+				</ul>
+
+			</div>
+
+		</div>
+		<!-- End of profile section -->
+
+	</div>
+	<!-- End of container -->
+
+
+
+<body>
+
+	<div class="container">
+
+		<div class="gallery">
+
+			
+		</div>
+		<!-- End of gallery -->
+
+		<div class="loader"></div>
+
+	</div>
+    <!-- End of container -->
+    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="./js/main.js"></script>
+    <script src="./js/user.js"></script>
+</body>
+</html>

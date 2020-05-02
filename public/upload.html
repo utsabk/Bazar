@@ -15,8 +15,12 @@
 <header>
     <div class="header">
          <div class="header-right">
-            <img src="./images/logo.png" alt="IMG" />
-         </div>
+            <img
+              onclick="location.replace('../index.html');"
+              src="./images/logo.png"
+              alt="IMG"
+             />  
+          </div>
 
           <div class="search-container">
             <form action="/action_page.php">
@@ -26,7 +30,7 @@
           </div>
           
           <div class="signin">
-            <i class="fas fa-user fa-2x" aria-hidden="true"></i>
+            <i id="userIcon" class="fas fa-user fa-2x" aria-hidden="true"></i>
             <a id=SignInBtn href="signin.html">SignIn</a>
           </div>
 

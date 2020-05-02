@@ -8,9 +8,8 @@ const fetchGraphql = async (query) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
-
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + sessionStorage.getItem('token'),
     },
     body: JSON.stringify(query),
   };
@@ -65,7 +64,11 @@ const fetchProductStatus = async () => {
 
 const fetchUser = async (userId) => {
   const query = {
-    query: `{\n owner(id:"${userId}")\n {\n id\n name\n }\n }\n `,
+    query: `{
+             owner(id:"${userId}")
+            { 
+              id\n name\n email\n password\n phone\n dp\n 
+            }\n }`,
   };
   const response = await fetchGraphql(query);
   return response;
@@ -75,7 +78,6 @@ const fetchUser = async (userId) => {
 const userID = sessionStorage.getItem('userId');
 
 // Socket Id saved in the session
-
 
 const fetchUserName = async (uID) => {
   try {
@@ -93,10 +95,52 @@ const fetchUserName = async (uID) => {
   if (userID) {
     const username = await fetchUserName(userID);
     signInBtn.innerHTML = username;
-    signInBtn.href = '#';
+    signInBtn.href = '../user.html';
     userIcon.className = '';
   }
 })();
+
+const fetchProduct = async (id) => {
+  const query = {
+    query: `{\n product(id:"${id}")
+    {\nid\n
+       Name\n 
+      Description\n 
+      Price\n 
+      Status{\n id\n Title\n }\n 
+      Category{\n id\n Title\n }\n 
+      Image\n 
+      Owner{\n id\n name\n email\n phone\n dp\n }\n 
+      Location{\n coordinates\n }\n
+    }
+  }`,
+  };
+  const result = await fetchGraphql(query);
+  return result;
+};
+
+const fetchProducts = async (userId, categoryId) => {
+  let myQuery;
+
+  const returnFields = `id\n Name\n Description\n Price\n Status{\n id\n Title\n }\n 
+  Category{\n id\n Title\n }\n Image\n Owner{\n id\n name\n email\n phone\n dp\n }\n Location{\n coordinates\n }\n`;
+
+  if (userId) {
+    myQuery = {
+      query: `{\n products(userId:"${userId}"){\n ${returnFields}\n }\n }\n `,
+    };
+  } else if (categoryId) {
+    myQuery = {
+      query: `{\n products(categoryId:"${categoryId}"){\n ${returnFields}\n }\n }\n `,
+    };
+  } else {
+    myQuery = {
+      query: `{\n products{\n ${returnFields}\n }\n }\n `,
+    };
+  }
+  const result = await fetchGraphql(myQuery);
+  return result;
+};
 
 const timeAgo = (time) => {
   let result;

@@ -6,7 +6,6 @@
   const categoryOption = document.getElementById('category');
   const statusOption = document.getElementById('status');
 
-  const signInBtn = document.getElementById('SignInBtn');
   const name = document.querySelector('input[name=name]');
   const description = document.querySelector('textarea[name=description]');
   const price = document.querySelector('input[name=price]');
@@ -14,13 +13,6 @@
   const image = document.querySelector('input[name=productImage]');
 
   const errorMessage = document.querySelector('.error-message-section');
-  // Fetch username if user is signed in
-  const userId = sessionStorage.getItem('userId');
-  if (userId) {
-    const users = await fetchUser(userId);
-    signInBtn.innerHTML = users.owner.name;
-    signInBtn.href = '#';
-  }
   // Populate category field
   const categories = await fetchCategories();
   categories.categories.forEach((category) => {

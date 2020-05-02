@@ -26,6 +26,24 @@
 }
 
 /*----------------------------*\
+      Header-middle
+  \*----------------------------*/
+
+.header-middle{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  color: whitesmoke;
+
+}
+.header a{
+  padding: 25px 50px;
+  color: whitesmoke;
+}
+
+
+/*----------------------------*\
       Search
   \*----------------------------*/
 

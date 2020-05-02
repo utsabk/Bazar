@@ -81,14 +81,17 @@ const RootQuery = new GraphQLObjectType({
       description: 'Get all the products',
       args: {
         categoryId: { type: GraphQLID },
+        userId: { type: GraphQLID },
       },
       resolve: async (parent, args) => {
         try {
           if (args.categoryId) {
             return await productSchema.find({
-              Category: {
-                _id: args.categoryId,
-              },
+              Category: { _id: args.categoryId },
+            });
+          } else if (args.userId) {
+            return await productSchema.find({
+              Owner: args.userId,
             });
           } else {
             return await productSchema.find();
@@ -196,9 +199,10 @@ const Mutation = new GraphQLObjectType({
         Owner: { type: GraphQLID },
         Location: { type: InputLocationType },
       },
-      resolve: async (parent, args) => {
+      resolve: async (parent, args, {req, res}) => {
         console.log('addProduct args:--', args);
         try {
+          authController.checkAuth(req, res);
           const { filename, mimetype, createReadStream } = await args.Image;
           const file = await new Promise(async (resolve, reject) => {
             const createdFile = await createReadStream()
@@ -225,21 +229,24 @@ const Mutation = new GraphQLObjectType({
       description: 'Uploads an image.',
       type: GraphQLUpload,
       args: {
+        id: {type: GraphQLID},
         image: {
           description: 'Image file.',
           type: GraphQLUpload,
         },
       },
-      async resolve(parent, args) {
+      async resolve(parent, args,{req, res}) {
         try {
+         authController.checkAuth(req, res);
           const { filename, mimetype, createReadStream } = await args.image;
           const file = await new Promise(async (resolve, reject) => {
             const createdFile = await createReadStream()
               .pipe(resize(300))
-              .pipe(createWriteStream(__dirname + `/../uploads/${filename}`))
+              .pipe(createWriteStream(__dirname + `/../public/profile/${filename}`))
               .on('finish', () => resolve(createdFile))
               .on('error', () => reject(false));
           });
+          return await userSchema.findByIdAndUpdate(args.id,  {dp: 'profile/' + filename}, {new: true})
         } catch (err) {
           throw new Error(err);
         }

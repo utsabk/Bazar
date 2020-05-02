@@ -122,9 +122,9 @@ const chatType = new GraphQLObjectType({
         } catch (e) {
           throw new Error(e.message);
         }
-      }
+      },
     },
-    sendTo:{
+    sendTo: {
       type: new GraphQLNonNull(ownerType),
       resolve: async (parent, args) => {
         try {
@@ -132,9 +132,9 @@ const chatType = new GraphQLObjectType({
         } catch (e) {
           throw new Error(e.message);
         }
-      }
+      },
     },
-    sendBetween:{ type: GraphQLString },
+    sendBetween: { type: GraphQLString },
     createdAt: { type: GraphQLString },
     updatedAt: { type: GraphQLString },
   }),
