@@ -177,6 +177,27 @@ const RootQuery = new GraphQLObjectType({
         }
       },
     },
+
+    search:{
+      type: new GraphQLList(productType),
+      description: 'Get the matching product based on search syntax',
+      args:{
+        text:{ type: GraphQLString },
+      },
+      resolve: async(parent, args, {req, res})=>{
+        try{
+
+          let query = [
+            { 'Name': { $regex: new RegExp(args.text, "i") } },
+            { 'Description': { $regex: new RegExp(args.text, "i") } },
+            ]
+        const result = await productSchema.find({ $or: query }) ;
+        return result;
+        }catch(err){
+          throw new Error(err);
+        }
+      }
+    },
   },
 });
 const Mutation = new GraphQLObjectType({
@@ -202,7 +223,7 @@ const Mutation = new GraphQLObjectType({
       resolve: async (parent, args, { req, res }) => {
         console.log('addProduct args:--', args);
         try {
-          authController.checkAuth(req, res);
+          await authController.checkAuth(req, res);
           const { filename, mimetype, createReadStream } = await args.Image;
           const file = await new Promise(async (resolve, reject) => {
             const createdFile = await createReadStream()
@@ -372,7 +393,6 @@ const Mutation = new GraphQLObjectType({
         }
       },
     },
-
     deleteProduct: {
       type: productType,
       description: 'Delete a product, authentication required',
@@ -381,7 +401,7 @@ const Mutation = new GraphQLObjectType({
       },
       resolve: async (parent, args, { req, res }) => {
         try {
-          authController.checkAuth(req, res);
+         await authController.checkAuth(req, res);
           return await productSchema.findByIdAndDelete(args.id);
         } catch (err) {
           throw new Error(err);

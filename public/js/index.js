@@ -4,6 +4,9 @@ const sectionTitle = document.querySelector('.section-title h3');
 const productContainer = document.querySelector('.products-cotainer');
 const home = document.getElementById('home');
 
+const searchForm = document.querySelector('#search-form');
+const searchInput = document.querySelector('input[name=search]');
+
 // Populate navigation bar fetching data from graphql
 const navBar = document.getElementById('navBar');
 (async () => {
@@ -49,14 +52,48 @@ const populateProduct = (product) => {
   });
 };
 
-
 const getProducts = async (id) => {
   productContainer.innerHTML = '';
-  const result = await fetchProducts(false,id)
-  result.products.forEach( product => {
-     populateProduct(product);
+  const result = await fetchProducts(false, id);
+  result.products.forEach((product) => {
+    populateProduct(product);
   });
 };
+
+searchForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const query = {
+    query: `
+   {
+    search(text:"${searchInput.value}"){
+      id
+      Name
+      Description 
+      Price 
+      Status{\n id\n Title\n }\n 
+      Category{\n id\n Title\n }\n 
+      Image\n
+      Owner{\n id\n name\n email\n phone\n dp\n }\n 
+      Location{\n coordinates\n }\n
+    }
+  }`,
+  };
+
+  try {
+    const result = await fetchGraphql(query);
+    console.log('This is a result:-', result.search.length);
+    if (result.search.length > 0) {
+      productContainer.innerHTML = ''; // delete before populating
+      result.search.forEach((product) => {
+        populateProduct(product);
+      });
+    }else{
+      location.href ='./notfound.html'
+    }
+  } catch (err) {
+    console.log('Error while fetching a search');
+  }
+});
 
 window.addEventListener('load', () => {
   getProducts();
