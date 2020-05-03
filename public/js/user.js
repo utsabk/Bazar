@@ -2,39 +2,42 @@
 
 $(document).ready(async () => {
   const user = await fetchUser(userID);
-  console.log('This is a user:-', user);
   if (user.owner.dp) {
     $('.profile-image img').attr('src', user.owner.dp);
   }
   $('.profile-user-settings h1').text(user.owner.name);
 
-  const result = await fetchProducts(userID, false);
-  console.log(result);
-  $('.profile-stat-count .products').text(result.products.length);
+  if (user.owner.email) {
+    $('.profile-stat-count #email').text(user.owner.email);
+  } else {
+    $('.profile-stat-count #email').text('Not provided');
+  }
+  if (user.owner.phone) {
+    $('.profile-stat-count #phone').text(user.owner.phone);
+  } else {
+    $('.profile-stat-count #phone').text('Not available');
+  }
 
-  result.products.forEach((product) => {
-    if (product.Owner.email) {
-      $('.profile-stat-count #email').text(product.Owner.email);
-    } else {
-      $('.profile-stat-count #email').text('Not provided');
-    }
-    if (product.Owner.phone) {
-      $('.profile-stat-count #phone').text(product.Owner.phone);
-    } else {
-      $('.profile-stat-count #phone').text('Not available');
-    }
+  try {
+    const result = await fetchProducts(userID, false);
+    
+    $('.profile-stat-count .products').text(result.products.length);
 
-    const item = document.createElement('div');
-    item.className = 'gallery-item';
-    item.innerHTML = `<img src="../${product.Image}" class="gallery-image" alt="">`;
+    result.products.forEach((product) => {
+      const item = document.createElement('div');
+      item.className = 'gallery-item';
+      item.innerHTML = `<img src="../${product.Image}" class="gallery-image" alt="">`;
 
-    $('.gallery').append(item);
+      $('.gallery').append(item);
 
-    item.addEventListener('click', () => {
-      console.log('eye clicked', product);
-      location.replace('../productdetails.html?' + product.id);
+      item.addEventListener('click', () => {
+        console.log('eye clicked', product);
+        location.replace('../productdetails.html?' + product.id);
+      });
     });
-  });
+  } catch (err) {
+    throw new Error(err);
+  }
 
   $('.btn.profile-edit-btn').click(() => {
     console.log('trash clicked');
@@ -89,57 +92,59 @@ $(document).ready(async () => {
   // Populate category field
   const categories = await fetchCategories();
   categories.categories.forEach((category) => {
-    $('#category').append(`<option value="${category.id}">${category.Title}</option>`);
+    $('#category').append(
+      `<option value="${category.id}">${category.Title}</option>`
+    );
   });
 
   // Populate product status  field
   const status = await fetchProductStatus();
   status.productStatus.forEach((status) => {
-    $('#status').append(`<option value="${status.id}">${status.Title}</option>`);
+    $('#status').append(
+      `<option value="${status.id}">${status.Title}</option>`
+    );
   });
 
-$('#product-form').submit(async(event)=>{
-  event.preventDefault();
-  const myFile = $('#productImage').prop('files')[0];
-  const formData = new FormData();
-  const query = {
-    query: `
+  $('#product-form').submit(async (event) => {
+    event.preventDefault();
+    const myFile = $('#productImage').prop('files')[0];
+    const formData = new FormData();
+    const query = {
+      query: `
     mutation($file: Upload!){\n product (
           Name:"${$("input[name='name']").val()}", 
           Description:"${$("textarea[name='description']").val()}",
           Price:${$("input[name='price']").val()},
-          Category:"${$("#category").val()}",
-          Status:"${$("#status").val()}",
+          Category:"${$('#category').val()}",
+          Status:"${$('#status').val()}",
           Image:$file,
           Owner:"${sessionStorage.getItem('userId')}",
           Location:{\n coordinates:[${$("input[name='location']").val()}]\n }
       )
       {\n id\n Name\n } 
    }`,
-  };
-  console.log('This is a query',query);
+    };
+    console.log('This is a query', query);
 
-  formData.append('operations', JSON.stringify(query));
-  formData.append('map', '{"0":["variables.file"]}');
-  formData.append('0', myFile);
+    formData.append('operations', JSON.stringify(query));
+    formData.append('map', '{"0":["variables.file"]}');
+    formData.append('0', myFile);
 
-  console.log('This is a formdat',formData);
-  const result = await fetchFile(formData);
-  console.log('Result of upload:--', result);
+    console.log('This is a formdat', formData);
+    const result = await fetchFile(formData);
+    console.log('Result of upload:--', result);
 
-  if (result.product) {
-    $('.error-message-section').html('');
-    try {
-      $('#myModal').css('display', 'none');
-      $(':root').css('font-size', '10px');
-      location.reload();
-    } catch (err) {
-      new Error(err.message);
+    if (result.product) {
+      $('.error-message-section').html('');
+      try {
+        $('#myModal').css('display', 'none');
+        $(':root').css('font-size', '10px');
+        location.reload();
+      } catch (err) {
+        new Error(err.message);
+      }
+    } else {
+      $('.error-message-section').html('Make sure all the fields are filled.');
     }
-  } else {
-    $('.error-message-section').html('Make sure all the fields are filled.');
-  }
-
-});
-
+  });
 });

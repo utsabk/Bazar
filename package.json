@@ -4,7 +4,7 @@
   "description": "An applicaton that allows users to buy from, sell to and chat with others locally",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -41,6 +41,7 @@
     "fs": "0.0.1-security",
     "graphql": "^15.0.0",
     "graphql-upload": "^10.0.0",
+    "helmet": "^3.22.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.9",
     "passport": "^0.4.1",

@@ -5,6 +5,7 @@ const express = require('express');
 const graphqlHTTP = require('express-graphql');
 const { graphqlUploadExpress } = require('graphql-upload');
 const bodyParser = require('body-parser');
+const helmet = require('helmet');
 const cors = require('cors');
 
 const db = require('./db/database');
@@ -15,7 +16,28 @@ const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
+// before routes; otherwise middleware didn't get called
+if (process.env.NODE_ENV === 'production') {
+  app.enable('trust proxy');
+  app.use((req, res, next) => {
+    if (req.secure) {
+      // request was via https, so do no special handling
+      next();
+    } else {
+      // request was via http, so redirect to https
+      res.redirect(`https://${req.headers.host}${req.url}`);
+    }
+  });
+
+  http.listen(process.env.PORT);
+} else {
+  http.listen(process.env.HTTP_PORT, () => {
+        console.log(`app listening on port ${process.env.HTTP_PORT}`);
+      });
+}
+
 app.use(cors());
+app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -34,11 +56,6 @@ app.use(
     })(req, res);
   }
 );
-db.on('connected', () => {
-  http.listen(process.env.APP_PORT, () => {
-    console.log(`app listening on port ${process.env.APP_PORT}`);
-  });
-});
 
 // Socket
 io.on('connection', (socket) => {
@@ -57,6 +74,8 @@ io.on('connection', (socket) => {
       sender: {
         name: data.username,
         id: data.userID,
+        dp: data.picture,
+
       },
     });
 
@@ -68,6 +87,7 @@ io.on('connection', (socket) => {
       sender: {
         name: data.username,
         id: data.userID,
+        dp: data.picture,
       },
     });
 

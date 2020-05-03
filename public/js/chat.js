@@ -8,20 +8,25 @@ const messages = document.querySelector('.messages-list');
 const productOwner = location.href.split('?').pop();
 
 (async () => {
-  if (userID) {
-    const username = await fetchUserName(userID);
-
-    form.addEventListener('submit', () => {
-      event.preventDefault();
-      socket.emit('send message', {
-        userID,
-        username,
-        message: input.value,
-        productOwner,
+  try{
+    if (userID) {
+      const user = await fetchUser(userID);
+      form.addEventListener('submit', () => {
+        event.preventDefault();
+        socket.emit('send message', {
+          userID,
+          username: user.owner.name,
+          picture: user.owner.dp,
+          message: input.value,
+          productOwner,
+        });
+        input.value = '';
       });
-      input.value = '';
-    });
+    }
+  }catch(err){
+    throw new Error(err)
   }
+  
 })();
 
 // Fetch chats from history
@@ -32,8 +37,8 @@ const productOwner = location.href.split('?').pop();
         sendToID:"${productOwner}"){
         id
         message
-        sender{\n id\n name\n}\n
-        sendTo{\n id\n name\n }\n
+        sender{\n id\n name\n dp\n}\n
+        sendTo{\n id\n name\n dp\n}\n
         createdAt
         updatedAt
       }
@@ -52,17 +57,19 @@ const productOwner = location.href.split('?').pop();
 })();
 
 socket.on('newConnection', (id) => {
-  socket.emit('new user',{userID, id});
+  socket.emit('new user', { userID, id });
 });
 
-
 const populateMessages = (data, time) => {
+  console.log('this is a data',data)
   if (userID == data.sender.id) {
     const item = document.createElement('div');
     item.className = 'container green';
     item.innerHTML = `
                     <div class="seller-chip">
-                    <img src="./img/shop01.png" alt="Avatar" class="right" style="width:100%;">
+                    <img src="${
+                      data.sender.dp
+                    }" alt="Avatar" class="right" style="width:100%;">
                     <h3>${data.sender.name}</h3> 
                     </div>
                     <p>${data.message}</p>
@@ -73,7 +80,7 @@ const populateMessages = (data, time) => {
     item.className = 'container white';
     item.innerHTML = `
                 <div class="seller-chip">
-                <img src="./img/shop01.png" alt="Avatar" style="width:100%;">
+                <img src="${data.sender.dp}" alt="Avatar" style="width:100%;">
                 <h3>${data.sender.name}</h3> 
                 </div>
                 <p>${data.message}</p>

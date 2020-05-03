@@ -77,24 +77,13 @@ const fetchUser = async (userId) => {
 // User Id saved in the session
 const userID = sessionStorage.getItem('userId');
 
-// Socket Id saved in the session
-
-const fetchUserName = async (uID) => {
-  try {
-    const user = await fetchUser(uID);
-    return user.owner.name;
-  } catch (err) {
-    new Error(err.message);
-  }
-};
-
 // Populate username if user is signed in
 (async () => {
   const signInBtn = document.getElementById('SignInBtn');
   const userIcon = document.getElementById('userIcon');
   if (userID) {
-    const username = await fetchUserName(userID);
-    signInBtn.innerHTML = username;
+    const user = await fetchUser(userID);
+    signInBtn.innerHTML = user.owner.name;
     signInBtn.href = '../user.html';
     userIcon.className = '';
   }
