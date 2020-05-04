@@ -20,7 +20,7 @@ $(document).ready(async () => {
 
   try {
     const result = await fetchProducts(userID, false);
-    
+
     $('.profile-stat-count .products').text(result.products.length);
 
     result.products.forEach((product) => {
@@ -71,21 +71,29 @@ $(document).ready(async () => {
   //<!--===============================================================================================-->
 
   $('.header-middle #sell').click(() => {
-    $('#myModal').css('display', 'block');
+    $('#uploadModal').css('display', 'block');
     $(':root').css('font-size', '15px');
   });
 
   // When the user clicks on <span> (x), close the modal
   $('.close').click(() => {
-    $('#myModal').css('display', 'none');
-    $(':root').css('font-size', '10px');
+    if ($(event.target).is('#uploadClose')) {
+      $('#uploadModal').css('display', 'none');
+      $(':root').css('font-size', '10px');
+    }
+    if ($(event.target).is('#mapClose')) {
+      $('#mapModal').css('display', 'none');
+    }
   });
 
   // When the user clicks anywhere outside of the modal, close it
   $(window).click((event) => {
-    if ($(event.target).is('#myModal')) {
-      $('#myModal').css('display', 'none');
+    if ($(event.target).is('#uploadModal')) {
+      $('#uploadModal').css('display', 'none');
       $(':root').css('font-size', '10px');
+    }
+    if ($(event.target).is('#mapModal')) {
+      $('#mapModal').css('display', 'none');
     }
   });
 
@@ -137,7 +145,7 @@ $(document).ready(async () => {
     if (result.product) {
       $('.error-message-section').html('');
       try {
-        $('#myModal').css('display', 'none');
+        $('#uploadModal').css('display', 'none');
         $(':root').css('font-size', '10px');
         location.reload();
       } catch (err) {
@@ -145,6 +153,60 @@ $(document).ready(async () => {
       }
     } else {
       $('.error-message-section').html('Make sure all the fields are filled.');
+    }
+  });
+
+  //<!--===============================================================================================-->
+  /*--- MAP  MODAL  ---*/
+
+  $("input[name='location']").click(() => {
+    $('#mapModal').css('display', 'block');
+
+    try {
+      // add map
+      const map = L.map('mapid').setView([60.16, 24.94], 10);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(map);
+
+      map.on('click', (evt) => {
+        $("input[name='location']").val(`${evt.latlng.lng}, ${evt.latlng.lat}`);
+      });
+
+      // if user position not found
+      const error = (e) => {
+        console.log(e);
+      };
+
+      // options for getCurrentPosition
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0,
+      };
+
+      // add user position
+      const success = (position) => {
+        const marker = L.marker([
+          position.coords.latitude,
+          position.coords.longitude,
+        ])
+          .addTo(map)
+          .bindPopup('You location.')
+          .openPopup();
+        map.panTo(marker.getLatLng());//panTo() is just another way of using setView().
+
+      };
+
+      if(!navigator.geolocation) {
+        console.log('Geolocation is not supported by your browser');
+      } else {
+        navigator.geolocation.getCurrentPosition(success, error, options);
+      }
+  
+    } catch (err) {
+      console.log(err.message);
     }
   });
 });

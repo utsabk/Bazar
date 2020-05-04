@@ -43,6 +43,7 @@
     "graphql-upload": "^10.0.0",
     "helmet": "^3.22.0",
     "jsonwebtoken": "^8.5.1",
+    "leaflet": "^1.6.0",
     "mongoose": "^5.9.9",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",

@@ -21,6 +21,7 @@ const productId = location.href.split('?').pop();
 })();
 
 const populateProductDetails = (product) => {
+  console.log('This is a product coordinates', product.Location.coordinates);
   const article = document.createElement('article');
   article.className = 'productItself';
 
@@ -68,7 +69,11 @@ const populateProductDetails = (product) => {
           <h3>${product.Owner.name}</h3> 
         </div>`;
 
+  const location = document.createElement('section');
+  location.id = 'map';
+
   productDetails.appendChild(sellerDetails);
+  productDetails.appendChild(location);
 
   // Check product owner and authorization
   if (userID) {
@@ -117,12 +122,12 @@ const populateProductDetails = (product) => {
   article.appendChild(productDetails);
 
   // When the user clicks on <span> (x), close the modal
-  span.onclick =  ()=> {
+  span.onclick = () => {
     modal.style.display = 'none';
   };
 
   // When the user clicks anywhere outside of the modal, close it
-  window.onclick =  (event)=> {
+  window.onclick = (event) => {
     if (event.target == modal) {
       modal.style.display = 'none';
     }
@@ -180,4 +185,25 @@ const populateProductDetails = (product) => {
       console.log('Err while updating product:-', err);
     }
   };
+
+  // Add map to the productDetails
+  if (product.Location.coordinates) {
+    // add map
+    const mymap = L.map('map').setView([60.24, 24.74], 11);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(mymap);
+    console.log('coordinates', product.Location.coordinates);
+  // Since longitude comes first (not latitude) in a GeoJSON coordinate array saved in Mongoose.
+  // we reverse the coordinates before drawing
+
+    const circle = L.circle(product.Location.coordinates.reverse(), {
+      color: 'blue',
+      fillColor: '#f03',
+      fillOpacity: 0.5,
+      radius: 1500,
+    }).addTo(mymap);
+    mymap.setView(circle.getLatLng(),10);
+  }
 };

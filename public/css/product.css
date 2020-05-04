@@ -100,13 +100,12 @@ ol {
 	Section
 \*----------------------------*/
 
-.section{
+.section {
   height: 100%;
 }
 
-.section-title{
+.section-title {
   border-bottom: 1px solid #e4e7ed;
-
 }
 .section-title .title {
   display: inline-block;
@@ -148,16 +147,15 @@ ol {
 
 .product .product-img {
   margin: 0px 5px;
-  width:100%;
-  height:100%;
-  display:flex;
+  width: 100%;
+  height: 100%;
+  display: flex;
 }
 
 .product .product-img > img {
   display: flex;
   justify-content: center;
   width: 300px;
-
 }
 
 .product .product-body {
@@ -217,7 +215,6 @@ ol {
   color: #fff;
 }
 
-
 /*----------------------------*\
 	Product Details Page
 \*----------------------------*/
@@ -239,19 +236,21 @@ ol {
 \*----------------------------*/
 .product-main-img {
   margin: 0px 5px;
-  width:100%;
-  height:100%;
-  display:flex;
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
+
 .product-main-img .product-preview {
   width: 100%;
-  display: flex;
-  justify-content: center;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .product-main-img .product-preview img {
   width: 450px;
-  
 }
 /*----------------------------*\
 	Product Details 
@@ -262,7 +261,7 @@ ol {
   height: 100%;
   background-color: #f1f1f1;
 }
-.product-details .spec{
+.product-details .spec {
   margin: 50px;
 }
 
@@ -310,31 +309,32 @@ ol {
   margin-left: 10px;
 }
 
-.product-details  .seller-details {
+.product-details .seller-details {
   display: inline-block;
   width: 100%;
   border-top: 2px solid #b4b0b0;
 }
 
-.product-details  .seller-details h5{
-  margin:10px 0 10px 50px
+.product-details .seller-details h5 {
+  margin: 10px 0 10px 50px;
 }
-.seller-chip{
+.seller-chip {
   display: flex;
   padding: 0 20px;
-  margin:0 50px;
+  margin: 0 50px;
   height: 50px;
   font-size: 16px;
   line-height: 50px;
   border-radius: 20px;
 }
 
-.seller-chip:hover{
-  background:rgb(21, 125, 245);
+.seller-chip:hover {
+  background: rgb(21, 125, 245);
   background: -webkit-linear-gradient(-135deg, #ff5f5f, rgb(21, 125, 245));
   background: -o-linear-gradient(-135deg, #ff5f5f, rgb(21, 125, 245));
   background: -moz-linear-gradient(-135deg, #ff5f5f, rgb(21, 125, 245));
-  background: linear-gradient(-135deg, #ff5f5f, rgb(21, 125, 245));}
+  background: linear-gradient(-135deg, #ff5f5f, rgb(21, 125, 245));
+}
 
 .seller-chip img {
   float: left;
@@ -344,16 +344,22 @@ ol {
   border-radius: 50%;
 }
 .seller-chip h3 {
-  padding:0px 20px;
+  padding: 0px 20px;
   align-items: center;
 }
 .product-details button {
-    height: 40px;
-    width: 100%;
-    margin:30px 0px;
-    background: #D10024;
-    color: #FFF;
-    font-weight: 800;
-    border: none;
-    border-radius: 40px;
+  height: 40px;
+  width: 100%;
+  margin: 30px 0px;
+  background: #d10024;
+  color: #fff;
+  font-weight: 800;
+  border: none;
+  border-radius: 40px;
+}
+
+#map {
+  width: 90%;
+  height: 160px;
+  margin-left: 25px;
 }

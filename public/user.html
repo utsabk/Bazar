@@ -13,7 +13,9 @@
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="./css/modal.css" />
     <!--===============================================================================================-->
-  
+    <link rel="stylesheet" href="./modules/leaflet/dist/leaflet.css"/>
+    <!--===============================================================================================-->
+
   </head>
 <header>
     <div class="header">
@@ -35,7 +37,9 @@
         </div>
       </div>
 </header>
-	<div class="container">
+<body>
+
+  <div class="container">
 
 		<div class="profile">
 
@@ -90,10 +94,10 @@
 
 
    <!-- The Modal -->
-   <div id="myModal" class="modal">
+   <div id="uploadModal" class="modal">
     <!-- Modal content -->
     <div class="modal-content">
-      <span class="close">&times;</span>
+      <span id="uploadClose" class="close">&times;</span>
       <section id="insert-section">
         <form id="product-form">
             <div class="item">
@@ -157,7 +161,18 @@
   </div>
   <!-- The Modal -->
 
-<body>
+
+  <!-- The Map Modal -->
+  <div id="mapModal" class="modal map">
+    <!-- Modal content -->
+    <div class="modal-content map">
+      <label>Select a location on map.</label>
+      <span id="mapClose" class="close">&times;</span>
+      <div id="mapid" ></div>
+    </div>
+    <!-- Modal content -->
+  </div>
+  <!-- The Modal -->
 
 	<div class="container">
 
@@ -171,6 +186,8 @@
 
 	</div>
     <!-- End of container -->
+
+    <script src="./modules/leaflet/dist/leaflet.js"></script>
     <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="./js/main.js"></script>
     <script src="./js/user.js"></script>
