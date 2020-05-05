@@ -21,7 +21,7 @@ const productId = location.href.split('?').pop();
 })();
 
 const populateProductDetails = (product) => {
-  console.log('This is a product coordinates', product.Location.coordinates);
+  console.log('This is a product coordinates', product.Location.coordinates.length);
   const article = document.createElement('article');
   article.className = 'productItself';
 
@@ -83,7 +83,7 @@ const populateProductDetails = (product) => {
       productDetails.appendChild(askDetailsBtn);
 
       askDetailsBtn.addEventListener('click', (event) => {
-        location.replace('../chat.html?' + product.Owner.id);
+        window.location = '../chat.html?' + product.Owner.id;
       });
     } else {
       const editItem = document.createElement('button');
@@ -97,9 +97,10 @@ const populateProductDetails = (product) => {
 
       deleteBtn.addEventListener('click', async () => {
         const result = await deleteProduct(product.id);
+        console.log('this is a result:-', result);
         try {
           if (result.deleteProduct.id) {
-            location.replace('../index.html');
+             window.location = '../index.html';
           }
         } catch (err) {
           console.log('User decided to withdraw the delete action');
@@ -108,12 +109,16 @@ const populateProductDetails = (product) => {
 
       updateForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-        const result = await updateProduct(product.id);
-        if (result.modifyProduct.id) {
-          modal.style.display = 'none';
-          location.reload();
-        } else {
-          alert('Something went wrong');
+        try {
+          const result = await updateProduct(product.id);
+          if (result.modifyProduct.id) {
+            modal.style.display = 'none';
+            window.location = window.location; //another way of reloading cureent location
+          } else {
+            alert('Something went wrong');
+          }
+        } catch (err) {
+          console.log(err);
         }
       });
     }
@@ -187,7 +192,7 @@ const populateProductDetails = (product) => {
   };
 
   // Add map to the productDetails
-  if (product.Location.coordinates) {
+ 
     // add map
     const mymap = L.map('map').setView([60.24, 24.74], 11);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -196,6 +201,8 @@ const populateProductDetails = (product) => {
     }).addTo(mymap);
     //add zoom control to the topright
     mymap.zoomControl.setPosition('topright');
+
+    if (product.Location.coordinates.length > 0) {
     console.log('coordinates', product.Location.coordinates);
     // Since longitude comes first (not latitude) in a GeoJSON coordinate array saved in Mongoose.
     // we reverse the coordinates before drawing

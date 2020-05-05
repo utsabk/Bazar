@@ -4,6 +4,14 @@ $(document).ready(async () => {
   const user = await fetchUser(userID);
   if (user.owner.dp) {
     $('.profile-image img').attr('src', user.owner.dp);
+    $('.btn.profile-settings-btn').css('opacity','1'); 
+
+    $('.btn.profile-settings-btn').click(()=>{
+      sessionStorage.clear();
+      location.replace('../index.html');
+    });
+  }else{
+    $('.btn.profile-settings-btn').css('opacity','0')
   }
   $('.profile-user-settings h1').text(user.owner.name);
 
