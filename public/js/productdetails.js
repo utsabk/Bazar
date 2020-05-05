@@ -194,9 +194,11 @@ const populateProductDetails = (product) => {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(mymap);
+    //add zoom control to the topright
+    mymap.zoomControl.setPosition('topright');
     console.log('coordinates', product.Location.coordinates);
-  // Since longitude comes first (not latitude) in a GeoJSON coordinate array saved in Mongoose.
-  // we reverse the coordinates before drawing
+    // Since longitude comes first (not latitude) in a GeoJSON coordinate array saved in Mongoose.
+    // we reverse the coordinates before drawing
 
     const circle = L.circle(product.Location.coordinates.reverse(), {
       color: 'blue',
@@ -204,6 +206,6 @@ const populateProductDetails = (product) => {
       fillOpacity: 0.5,
       radius: 1500,
     }).addTo(mymap);
-    mymap.setView(circle.getLatLng(),10);
+    mymap.setView(circle.getLatLng(), 10);
   }
 };

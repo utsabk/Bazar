@@ -103,20 +103,24 @@
 /*------------------------------------------------------------------
   [ Responsive ]*/
 
-@media (max-width: 920px) {
+@media screen and (max-width: 920px) {
   .header input[type='text'] {
     width: 400px;
   }
 }
 
-@media (max-width: 815px) {
+@media screen and (max-width: 815px) {
   .header input[type='text'] {
     width: 250px;
   }
 }
 
-@media (max-width: 665px) {
+@media screen and (max-width: 665px) {
     .header .search-container {
         visibility: hidden;
       }
+      .header {
+        justify-content: center;
+      }
+
 }
